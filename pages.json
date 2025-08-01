@@ -1,0 +1,95 @@
+{
+  "pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+    {
+      "path": "pages/index/index",
+      "style": {
+        "navigationBarTitleText": "AI短视频脚本生成器"
+      }
+    },
+    {
+      "path": "pages/history/index",
+      "style": {
+        "navigationBarTitleText": "我的作品"
+      }
+    },
+    {
+      "path": "pages/my/index",
+      "style": {
+        "navigationBarTitleText": "个人中心"
+      }
+    },
+    {
+      "path": "pages/login/index",
+      "style": {
+        "navigationBarTitleText": ""
+      }
+    }
+  ],
+  "subPackages": [
+    {
+      "root": "package/",
+      "pages": [
+        {
+          "path": "pages/bindAccount/index",
+          "style": {
+            "navigationBarTitleText": "绑定抖音账号"
+          }
+        },
+        {
+          "path": "pages/privacy/index",
+          "style": {
+            "navigationBarTitleText": "隐私协议"
+          }
+        },
+        {
+          "path": "pages/userAgreement/index",
+          "style": {
+            "navigationBarTitleText": "用户协议"
+          }
+        },
+        {
+          "path": "pages/detail/index",
+          "style": {
+            "navigationBarTitleText": "分镜头脚本详情"
+          }
+        },
+        {
+          "path": "pages/memberCenter/index",
+          "style": {
+            "navigationBarTitleText": "会员中心"
+          }
+        }
+      ]
+    }
+  ],
+  "tabBar": {
+    "custom": true,
+    "color": "#333333",
+    "selectedColor": "#FF1414",
+    "borderStyle": "white",
+    "backgroundColor": "#F8F8F8",
+    "fontSize": "32px",
+    "height": "150px",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/history/index",
+        "text": "我的作品"
+      },
+      {
+        "pagePath": "pages/my/index",
+        "text": "我的"
+      }
+    ]
+  },
+  "globalStyle": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "uni-app",
+    "navigationBarBackgroundColor": "#F8F8F8",
+    "backgroundColor": "#f7f8fa"
+  },
+  "uniIdRouter": {}
+}

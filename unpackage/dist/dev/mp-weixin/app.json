@@ -1,0 +1,48 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/history/index",
+    "pages/my/index",
+    "pages/login/index"
+  ],
+  "subPackages": [
+    {
+      "root": "package/",
+      "pages": [
+        "pages/bindAccount/index",
+        "pages/privacy/index",
+        "pages/userAgreement/index",
+        "pages/detail/index",
+        "pages/memberCenter/index"
+      ]
+    }
+  ],
+  "window": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "uni-app",
+    "navigationBarBackgroundColor": "#F8F8F8",
+    "backgroundColor": "#f7f8fa"
+  },
+  "tabBar": {
+    "custom": true,
+    "color": "#333333",
+    "selectedColor": "#FF1414",
+    "borderStyle": "white",
+    "backgroundColor": "#F8F8F8",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/history/index",
+        "text": "我的作品"
+      },
+      {
+        "pagePath": "pages/my/index",
+        "text": "我的"
+      }
+    ]
+  },
+  "usingComponents": {}
+}

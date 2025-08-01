@@ -1,0 +1,172 @@
+/**
+ * 这里是uni-app内置的常用样式变量
+ *
+ * uni-app 官方扩展插件及插件市场（https://ext.dcloud.net.cn）上很多三方插件均使用了这些样式变量
+ * 如果你是插件开发者，建议你使用scss预处理，并在插件代码中直接使用这些变量（无需 import 这个文件），方便用户通过搭积木的方式开发整体风格一致的App
+ *
+ */
+/**
+ * 如果你是App开发者（插件使用者），你可以通过修改这些变量来定制自己的插件主题，实现自定义主题功能
+ *
+ * 如果你的项目同样使用了scss预处理，你也可以直接在你的 scss 代码中使用如下变量，同时无需 import 这个文件
+ */
+/* 颜色变量 */
+/* 行为相关颜色 */
+/* 文字基本颜色 */
+/* 背景颜色 */
+/* 边框颜色 */
+/* 尺寸变量 */
+/* 文字尺寸 */
+/* 图片尺寸 */
+/* Border Radius */
+/* 水平间距 */
+/* 垂直间距 */
+/* 透明度 */
+/* 文章场景相关 */
+.bind-container.data-v-50aa1379 {
+  background: #f7f8fa;
+  min-height: 100vh;
+  padding: 32rpx 0;
+}
+.bind-container .tab-bar.data-v-50aa1379 {
+  display: flex;
+  background: #fff;
+  border-radius: 32rpx 32rpx 0 0;
+  overflow: hidden;
+  margin: 0 32rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.03);
+}
+.bind-container .tab-bar .tab.data-v-50aa1379 {
+  flex: 1;
+  text-align: center;
+  font-size: 32rpx;
+  font-weight: 500;
+  color: #888;
+  padding: 24rpx 0;
+  background: #fff;
+  border: none;
+}
+.bind-container .tab-bar .tab.active.data-v-50aa1379 {
+  color: #3478f6;
+  background: #f7f8fa;
+  border-bottom: 4rpx solid #3478f6;
+  font-weight: bold;
+}
+.bind-container .scan-content.data-v-50aa1379,
+.bind-container .account-content.data-v-50aa1379 {
+  background: #fff;
+  margin: 0 32rpx 32rpx 32rpx;
+  border-radius: 0 0 32rpx 32rpx;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.03);
+  padding: 40rpx 32rpx 32rpx 32rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.bind-container .title.data-v-50aa1379 {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #222;
+  margin-bottom: 16rpx;
+  text-align: center;
+}
+.bind-container .desc.data-v-50aa1379 {
+  font-size: 26rpx;
+  color: #888;
+  margin-bottom: 32rpx;
+  text-align: center;
+}
+.bind-container .qrcode-box.data-v-50aa1379 {
+  position: relative;
+  margin-bottom: 24rpx;
+  padding: 10px;
+  border: 1px dashed #aaa;
+  border-radius: 15px;
+}
+.bind-container .qrcode-box .qrcode.data-v-50aa1379 {
+  width: 320rpx;
+  height: 320rpx;
+  border-radius: 24rpx;
+  border: 2rpx dashed #e5e6eb;
+  background: #fff;
+  display: block;
+}
+.bind-container .qrcode-box .refresh-btn.data-v-50aa1379 {
+  position: absolute;
+  top: -16rpx;
+  right: -16rpx;
+  width: 48rpx;
+  height: 48rpx;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow: 0 2rpx 8rpx rgba(0, 0, 0, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.bind-container .qrcode-box .refresh-btn .refresh-icon.data-v-50aa1379 {
+  width: 32rpx;
+  height: 32rpx;
+}
+.bind-container .scan-tip.data-v-50aa1379 {
+  margin-bottom: 24rpx;
+}
+.bind-container .scan-tip .tip-title.data-v-50aa1379 {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #222;
+  text-align: center;
+  margin-bottom: 8rpx;
+}
+.bind-container .scan-tip .tip-desc.data-v-50aa1379 {
+  font-size: 24rpx;
+  color: #888;
+  text-align: center;
+}
+.bind-container .steps-box.data-v-50aa1379 {
+  width: 100%;
+  background: #f5f7ff;
+  border-radius: 20rpx;
+  padding: 24rpx;
+  margin-bottom: 32rpx;
+}
+.bind-container .steps-box .steps-title.data-v-50aa1379 {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #3478f6;
+  margin-bottom: 12rpx;
+  display: flex;
+  align-items: center;
+}
+.bind-container .steps-box .steps-title .iconfont.data-v-50aa1379 {
+  font-size: 28rpx;
+  margin-right: 8rpx;
+}
+.bind-container .steps-box .steps-list.data-v-50aa1379 {
+  font-size: 26rpx;
+  color: #222;
+  line-height: 2.2;
+  padding-left: 8rpx;
+}
+.bind-container .confirm-btn.data-v-50aa1379 {
+  width: 100%;
+  background: #3478f6;
+  color: #fff;
+  border-radius: 12rpx;
+  font-size: 32rpx;
+  height: 80rpx;
+  line-height: 80rpx;
+  font-weight: bold;
+  margin-bottom: 16rpx;
+}
+.bind-container .protocol.data-v-50aa1379 {
+  font-size: 22rpx;
+  color: #888;
+  text-align: center;
+  margin-top: 8rpx;
+}
+.bind-container .protocol .link.data-v-50aa1379 {
+  color: #3478f6;
+  text-decoration: underline;
+  margin: 0 4rpx;
+}
