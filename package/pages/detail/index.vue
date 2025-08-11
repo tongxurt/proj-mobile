@@ -97,7 +97,7 @@
           </view>
           <view class="script-meta">{{ formatTimestamp(data.createdAt) }} 创建</view>
           <view class="script-tags">
-            <view class="tag pink">美妆护肤</view>
+            <view class="tag pink">{{data?.commodity?.category}}</view>
             <view class="tag blue">{{ data.script.segments.length }} 个镜头</view>
           </view>
         </view>
@@ -1419,10 +1419,10 @@ export default {
     color: #666;
     line-height: 1.4;
     display: -webkit-box;
-    -webkit-line-clamp: 2;
+    -webkit-line-clamp: 4;
     -webkit-box-orient: vertical;
     overflow: hidden;
-    text-overflow: ellipsis;
+    //text-overflow: ellipsis;
   }
 }
 
