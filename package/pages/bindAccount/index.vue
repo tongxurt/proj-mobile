@@ -59,6 +59,7 @@
 </template>
 
 <script>
+import request from "../../../request";
 export default {
   data () {
     return {
@@ -70,8 +71,13 @@ export default {
       // 刷新二维码逻辑
       this.qrcodeUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' + Math.random();
     },
-    confirmAuth () {
+    async confirmAuth () {
+      await request({
+        url: '/api/pro/v1/accounts',
+        method: 'POST',
+      })
       uni.showToast({ title: '授权成功', icon: 'success' });
+      uni.navigateBack()
     },
     openPrivacy () {
       // 跳转隐私政策

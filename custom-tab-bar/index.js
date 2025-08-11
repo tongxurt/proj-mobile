@@ -14,6 +14,11 @@ Component({
       icon: "/static/video.svg",
       activeIcon: "/static/video_active.svg"
     }, {
+      pagePath: "/pages/account/index",
+      text: "账号分析",
+      icon: "/static/chart.svg",
+      activeIcon: "/static/chart_active.svg"
+    }, {
       pagePath: "/pages/my/index",
       text: "我的",
       icon: "/static/my.svg",

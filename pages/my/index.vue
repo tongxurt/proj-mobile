@@ -10,16 +10,13 @@
         ></image>
         <view class="user-info">
           <view class="user-row">
-            <text
-              class="user-name"
-              @click="goToLogin"
-            >李雨桐</text>
+            <text class="user-name">{{ userInfo.username }}</text>
             <text
               class="user-tag"
               @click="showPlanPopup = true"
-            >专业版</text>
+            >免费版</text>
           </view>
-          <view class="user-expire">会员到期时间：2025-08-10</view>
+          <!-- <view class="user-expire">会员到期时间：2025-08-10</view> -->
         </view>
         <button
           class="user-btn"
@@ -34,7 +31,7 @@
           <text class="stat-label">本月生成次数</text>
         </view>
         <view class="stat-item">
-          <text class="stat-num">127</text>
+          <text class="stat-num">396</text>
           <text class="stat-label">剩余生成次数</text>
         </view>
       </view>
@@ -97,7 +94,7 @@
             <view class="list-title">账号与绑定</view>
             <view class="list-desc">管理账号信息和第三方绑定</view>
           </view>
-          <text class="bind-tag">已绑定抖音</text>
+          <text class="bind-tag">{{dyUser.name ? '已绑定抖音' : '绑定抖音'}}</text>
           <image
             class="list-arrow"
             src="/static/arrow.svg"
@@ -418,12 +415,15 @@
 </template>
 
 <script>
+import request from "../../request";
 export default {
   data () {
     return {
       showUpgrade: false,
       showVip: false,
-      showPlanPopup: false
+      showPlanPopup: false,
+      dyUser: {},
+      userInfo: {}
     }
   },
   methods: {
@@ -432,9 +432,11 @@ export default {
       this.showUpgrade = false
     },
     goToBindAccount () {
-      uni.navigateTo({
-        url: '/package/pages/bindAccount/index'
-      })
+      if (!this.dyUser.name) {
+        uni.navigateTo({
+          url: '/package/pages/bindAccount/index'
+        })
+      }
     },
     goToMemberCenter () {
       uni.navigateTo({
@@ -446,15 +448,30 @@ export default {
         url: '/pages/login/index'
       })
     },
-
+    async getDyInfo () {
+      const data = await request({
+        url: '/api/pro/v1/accounts',
+        method: 'GET',
+      })
+      this.dyUser = data.data
+    },
+    async getUserInfo () {
+      const data = await request({
+        url: '/api/v1/users/me',
+        method: 'GET',
+      })
+      this.userInfo = data.data
+    }
   },
   onShow () {
     const curPages = getCurrentPages()[0];
     if (typeof curPages.getTabBar === 'function' && curPages.getTabBar()) {
       curPages.getTabBar().setData({
-        selected: 2
+        selected: 3
       });
     }
+    this.getDyInfo()
+    this.getUserInfo()
   }
 }
 </script>
