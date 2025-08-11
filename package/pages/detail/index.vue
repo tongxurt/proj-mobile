@@ -2,8 +2,8 @@
   <view class="detail-root">
     <!-- 骨架屏 -->
     <view
-        v-if="loading"
-        class="skeleton-container"
+      v-if="loading"
+      class="skeleton-container"
     >
       <!-- 脚本信息骨架屏 -->
       <view class="skeleton-main-container">
@@ -44,9 +44,9 @@
 
       <view class="skeleton-shot-list">
         <view
-            class="skeleton-shot-card"
-            v-for="i in 3"
-            :key="i"
+          class="skeleton-shot-card"
+          v-for="i in 3"
+          :key="i"
         >
           <view class="skeleton-shot-header">
             <view class="skeleton-shot-index"></view>
@@ -82,15 +82,18 @@
 
     <!-- 实际内容 -->
     <view
-        v-else
-        class="main-content"
+      v-else
+      class="main-content"
     >
       <view class="main-container">
         <!-- 脚本信息 -->
         <view class="script-header">
           <view class="script-title-row">
             <view class="script-title">{{ data.commodity.title }}</view>
-            <button class="regen-btn">重新生成</button>
+            <button
+              class="regen-btn"
+              @click="regen"
+            >重新生成</button>
           </view>
           <view class="script-meta">{{ formatTimestamp(data.createdAt) }} 创建</view>
           <view class="script-tags">
@@ -104,9 +107,9 @@
           <view class="requirement-card blue">
             <view class="req-title">
               <image
-                  class="req-icon"
-                  src="/static/req-script.svg"
-                  mode="aspectFit"
+                class="req-icon"
+                src="/static/req-script.svg"
+                mode="aspectFit"
               ></image>
               脚本要求
             </view>
@@ -115,9 +118,9 @@
           <view class="requirement-card yellow">
             <view class="req-title">
               <image
-                  class="req-icon"
-                  src="/static/req-text.svg"
-                  mode="aspectFit"
+                class="req-icon"
+                src="/static/req-text.svg"
+                mode="aspectFit"
               ></image>
               文案要求
             </view>
@@ -126,9 +129,9 @@
           <view class="requirement-card green">
             <view class="req-title">
               <image
-                  class="req-icon"
-                  src="/static/req-scene.svg"
-                  mode="aspectFit"
+                class="req-icon"
+                src="/static/req-scene.svg"
+                mode="aspectFit"
               ></image>
               场景要求
             </view>
@@ -145,15 +148,15 @@
       <view class="shot-list">
         <!-- 镜头列表 -->
         <view
-            class="shot-card card"
-            v-for="(item, key) in data.script.segments"
-            :key="key"
+          class="shot-card card"
+          v-for="(item, key) in data.script.segments"
+          :key="key"
         >
           <!-- 折叠状态 -->
           <view
-              v-if="!item.isExpanded"
-              class="shot-collapsed"
-              @click="toggleExpand(item, key)"
+            v-if="!item.isExpanded"
+            class="shot-collapsed"
+            @click="toggleExpand(item, key)"
           >
             <view class="shot-header-collapsed">
               <view class="shot-index">{{ key + 1 }}</view>
@@ -164,14 +167,14 @@
                 </view>
                 <view class="shot-thumbnail">
                   <image
-                      class="shot-img"
-                      :src="item.reference.coverUrl"
-                      mode="aspectFill"
+                    class="shot-img"
+                    :src="item.reference.coverUrl"
+                    mode="aspectFill"
                   ></image>
                   <image
-                      @click.stop="play(item)"
-                      class="play-btn"
-                      src="/static/play.svg"
+                    @click.stop="play(item)"
+                    class="play-btn"
+                    src="/static/play.svg"
                   />
                 </view>
               </view>
@@ -184,10 +187,10 @@
               </view> -->
             </view>
             <view
-                class="shot-actions-collapsed"
-                @click.stop="open(item)"
+              class="shot-actions-collapsed"
+              @click.stop="open(item)"
             >
-              <image src="/static/show.svg"/>
+              <image src="/static/show.svg" />
               查看拍摄手法
             </view>
           </view>
@@ -195,8 +198,8 @@
           <!-- 展开状态（保持原有内容） -->
           <view v-else>
             <view
-                class="shot-header"
-                @click="toggleExpand(item, key)"
+              class="shot-header"
+              @click="toggleExpand(item, key)"
             >
               <view class="shot-index">{{ key + 1 }}</view>
               <view class="shot-info">
@@ -205,9 +208,9 @@
               </view>
               <view class="shot-status-box orange">
                 <image
-                    class="shot-status"
-                    src="/static/clock.svg"
-                    mode="aspectFit"
+                  class="shot-status"
+                  src="/static/clock.svg"
+                  mode="aspectFit"
                 ></image>
               </view>
               <!-- <view class="expand-icon">
@@ -222,10 +225,10 @@
               <view class="shot-label">口播文案：</view>
               <view class="shot-text">{{ item?.content?.subtitle }}</view>
             </view>
-<!--            <view class="shot-content">-->
-<!--              <view class="shot-label">视频内文案：</view>-->
-<!--              <view class="shot-text">{{ item?.content?.textInVideo }}</view>-->
-<!--            </view>-->
+            <!--            <view class="shot-content">-->
+            <!--              <view class="shot-label">视频内文案：</view>-->
+            <!--              <view class="shot-text">{{ item?.content?.textInVideo }}</view>-->
+            <!--            </view>-->
             <view class="shot-content">
               <view class="shot-label">画面解读：</view>
               <view class="shot-text">{{ item?.desc }}</view>
@@ -234,30 +237,30 @@
               <view class="shot-label">画面参考：</view>
               <view style="position: relative;">
                 <image
-                    class="shot-img"
-                    :src="item.reference.coverUrl"
-                    mode="aspectFill"
+                  class="shot-img"
+                  :src="item.reference.coverUrl"
+                  mode="aspectFill"
                 ></image>
                 <image
-                    @click.stop="play(item)"
-                    class="play"
-                    src="/static/play.svg"
+                  @click.stop="play(item)"
+                  class="play"
+                  src="/static/play.svg"
                 />
               </view>
             </view>
             <view class="shot-actions">
               <button
-                  class="shot-btn outline"
-                  @click="open(item)"
+                class="shot-btn outline"
+                @click="open(item)"
               >
-                <image src="/static/show.svg"/>
+                <image src="/static/show.svg" />
                 查看拍摄手法
               </button>
               <button
-                  class="shot-btn"
-                  @click="upload"
+                class="shot-btn"
+                @click="upload"
               >
-                <image src="/static/upload.svg"/>
+                <image src="/static/upload.svg" />
                 上传素材
               </button>
             </view>
@@ -278,37 +281,37 @@
 
     <!-- 视频播放弹窗 -->
     <view
-        v-if="showVideoPlayer"
-        class="video-popup-mask"
-        @click="closeVideoPlayer"
+      v-if="showVideoPlayer"
+      class="video-popup-mask"
+      @click="closeVideoPlayer"
     ></view>
 
     <view
-        v-if="showVideoPlayer"
-        class="video-popup"
+      v-if="showVideoPlayer"
+      class="video-popup"
     >
       <view
-          class="video-popup-close"
-          @click="closeVideoPlayer"
+        class="video-popup-close"
+        @click="closeVideoPlayer"
       >
         <image
-            src="/static/close.svg"
-            mode="aspectFit"
+          src="/static/close.svg"
+          mode="aspectFit"
         ></image>
       </view>
       <view class="video-container">
         <video
-            id="videoPlayer"
-            :src="currentVideo.url"
-            :controls="true"
-            :autoplay="true"
-            :initial-time="currentVideo.timeStart"
-            :loop="false"
-            class="video-player"
-            @timeupdate="onTimeUpdate"
-            @ended="onVideoEnded"
-            @error="onVideoError"
-            @loadedmetadata="onVideoLoaded"
+          id="videoPlayer"
+          :src="currentVideo.url"
+          :controls="true"
+          :autoplay="true"
+          :initial-time="currentVideo.timeStart"
+          :loop="false"
+          class="video-player"
+          @timeupdate="onTimeUpdate"
+          @ended="onVideoEnded"
+          @error="onVideoError"
+          @loadedmetadata="onVideoLoaded"
         ></video>
       </view>
       <view class="video-info">
@@ -318,28 +321,28 @@
 
     <!-- 拍摄手法弹窗 -->
     <view
-        v-if="showPhotograph"
-        class="popup-mask"
-        @click="showPhotograph = false"
+      v-if="showPhotograph"
+      class="popup-mask"
+      @click="showPhotograph = false"
     ></view>
     <view
-        v-if="showPhotograph"
-        class="vip-popup"
+      v-if="showPhotograph"
+      class="vip-popup"
     >
       <view
-          class="popup-close"
-          @click="showPhotograph = false"
+        class="popup-close"
+        @click="showPhotograph = false"
       >
         <image
-            src="/static/close.svg"
-            mode="aspectFit"
+          src="/static/close.svg"
+          mode="aspectFit"
         ></image>
       </view>
       <view class="vip-title">拍摄指导</view>
       <view class="vip-content">
         <view
-            v-for="(item, index) in shootingStyle"
-            :key="index"
+          v-for="(item, index) in shootingStyle"
+          :key="index"
         >
           <view class="vip-content-subTitle">{{ item }}</view>
         </view>
@@ -353,7 +356,7 @@ import request from "../../../request";
 import config from "../../../config";
 
 export default {
-  data() {
+  data () {
     return {
       loading: true, // 添加loading状态
       showPhotograph: false,
@@ -368,18 +371,28 @@ export default {
       isVideoLoaded: false,
       hasReachedEnd: false,
       data: {
-        script: {segments: []},
+        script: { segments: [] },
         commodity: {}
       },
       shootingStyle: [],
       formatTimestamp: config.formatTimestamp
     }
   },
-  onLoad(options) {
+  onLoad (options) {
     this.getDetail(options.id)
   },
   methods: {
-    async getDetail(id) {
+    async regen () {
+      const data = await request({
+        url: `/api/pro/v1/tasks/${this.data._id}`,
+        method: 'PATCH',
+        data: { "action": "refresh" }
+      })
+      console.log(data);
+      // this.data = data.data
+      this.getDetail(this.data._id)
+    },
+    async getDetail (id) {
       try {
         this.loading = true; // 开始加载
         const data = await request({
@@ -403,11 +416,11 @@ export default {
       }
     },
     // 切换展开/折叠状态
-    toggleExpand(item, index) {
+    toggleExpand (item, index) {
       this.$set(item, 'isExpanded', !item.isExpanded)
     },
 
-    play(item) {
+    play (item) {
       this.hasReachedEnd = false
       this.isVideoLoaded = false
 
@@ -428,7 +441,7 @@ export default {
       })
     },
 
-    closeVideoPlayer() {
+    closeVideoPlayer () {
       if (this.videoContext) {
         this.videoContext.pause()
       }
@@ -444,11 +457,11 @@ export default {
       this.videoContext = null
     },
 
-    onVideoLoaded(e) {
+    onVideoLoaded (e) {
       this.isVideoLoaded = true
     },
 
-    onTimeUpdate(e) {
+    onTimeUpdate (e) {
       if (!this.isVideoLoaded || this.hasReachedEnd) return
 
       const newTime = e.detail.currentTime
@@ -470,23 +483,23 @@ export default {
       }
     },
 
-    onVideoEnded() {
+    onVideoEnded () {
       this.hasReachedEnd = true
     },
 
-    onVideoError(e) {
+    onVideoError (e) {
       uni.showToast({
         title: '视频播放失败',
         icon: 'none'
       })
     },
 
-    open(item) {
+    open (item) {
       this.shootingStyle = item.shootingStyle.split('\n')
       this.showPhotograph = true
     },
 
-    upload() {
+    upload () {
       uni.chooseImage({
         success: (chooseImageRes) => {
           console.log(chooseImageRes);
@@ -645,10 +658,10 @@ export default {
         height: 50rpx;
         border-radius: 50%;
         background: linear-gradient(
-                90deg,
-                #f0f0f0 25%,
-                #e0e0e0 50%,
-                #f0f0f0 75%
+          90deg,
+          #f0f0f0 25%,
+          #e0e0e0 50%,
+          #f0f0f0 75%
         );
         background-size: 200% 100%;
         animation: skeleton-loading 1.5s infinite;
@@ -662,10 +675,10 @@ export default {
           height: 28rpx;
           width: 60%;
           background: linear-gradient(
-                  90deg,
-                  #f0f0f0 25%,
-                  #e0e0e0 50%,
-                  #f0f0f0 75%
+            90deg,
+            #f0f0f0 25%,
+            #e0e0e0 50%,
+            #f0f0f0 75%
           );
           background-size: 200% 100%;
           animation: skeleton-loading 1.5s infinite;
@@ -677,10 +690,10 @@ export default {
           height: 22rpx;
           width: 40%;
           background: linear-gradient(
-                  90deg,
-                  #f0f0f0 25%,
-                  #e0e0e0 50%,
-                  #f0f0f0 75%
+            90deg,
+            #f0f0f0 25%,
+            #e0e0e0 50%,
+            #f0f0f0 75%
           );
           background-size: 200% 100%;
           animation: skeleton-loading 1.5s infinite;
@@ -693,10 +706,10 @@ export default {
         height: 50rpx;
         border-radius: 50%;
         background: linear-gradient(
-                90deg,
-                #f0f0f0 25%,
-                #e0e0e0 50%,
-                #f0f0f0 75%
+          90deg,
+          #f0f0f0 25%,
+          #e0e0e0 50%,
+          #f0f0f0 75%
         );
         background-size: 200% 100%;
         animation: skeleton-loading 1.5s infinite;
@@ -715,10 +728,10 @@ export default {
         height: 24rpx;
         width: 150rpx;
         background: linear-gradient(
-                90deg,
-                #f0f0f0 25%,
-                #e0e0e0 50%,
-                #f0f0f0 75%
+          90deg,
+          #f0f0f0 25%,
+          #e0e0e0 50%,
+          #f0f0f0 75%
         );
         background-size: 200% 100%;
         animation: skeleton-loading 1.5s infinite;
@@ -730,10 +743,10 @@ export default {
         height: 26rpx;
         width: 90%;
         background: linear-gradient(
-                90deg,
-                #f0f0f0 25%,
-                #e0e0e0 50%,
-                #f0f0f0 75%
+          90deg,
+          #f0f0f0 25%,
+          #e0e0e0 50%,
+          #f0f0f0 75%
         );
         background-size: 200% 100%;
         animation: skeleton-loading 1.5s infinite;
@@ -750,10 +763,10 @@ export default {
         flex: 1;
         height: 70rpx;
         background: linear-gradient(
-                90deg,
-                #f0f0f0 25%,
-                #e0e0e0 50%,
-                #f0f0f0 75%
+          90deg,
+          #f0f0f0 25%,
+          #e0e0e0 50%,
+          #f0f0f0 75%
         );
         background-size: 200% 100%;
         animation: skeleton-loading 1.5s infinite;
@@ -770,10 +783,10 @@ export default {
         height: 24rpx;
         width: 120rpx;
         background: linear-gradient(
-                90deg,
-                #f0f0f0 25%,
-                #e0e0e0 50%,
-                #f0f0f0 75%
+          90deg,
+          #f0f0f0 25%,
+          #e0e0e0 50%,
+          #f0f0f0 75%
         );
         background-size: 200% 100%;
         animation: skeleton-loading 1.5s infinite;
@@ -785,10 +798,10 @@ export default {
         height: 24rpx;
         width: 150rpx;
         background: linear-gradient(
-                90deg,
-                #f0f0f0 25%,
-                #e0e0e0 50%,
-                #f0f0f0 75%
+          90deg,
+          #f0f0f0 25%,
+          #e0e0e0 50%,
+          #f0f0f0 75%
         );
         background-size: 200% 100%;
         animation: skeleton-loading 1.5s infinite;
@@ -844,6 +857,7 @@ export default {
       display: flex;
       align-items: center;
       margin-bottom: 12rpx;
+      gap: 10rpx;
 
       .script-title {
         font-size: 36rpx;
