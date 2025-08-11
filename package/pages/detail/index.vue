@@ -76,10 +76,10 @@
               <view class="shot-index">{{key + 1}}</view>
               <view class="shot-info-collapsed-row">
                 <view class="shot-info-collapsed">
-                  <view class="shot-title">{{item.stage.name}}</view>
+                  <view class="shot-title">{{item.stage?.name}}</view>
                   <view class="shot-desc">{{item?.content?.subtitle}}</view>
                 </view>
-                <view class="shot-thumbnail">
+               <!-- <view class="shot-thumbnail">
                   <image
                     class="shot-img"
                     :src="item.reference.coverUrl"
@@ -90,7 +90,7 @@
                     class="play-btn"
                     src="/static/play.svg"
                   />
-                </view>
+                </view> -->
               </view>
               <!-- <view class="expand-icon">
                 <image
@@ -117,7 +117,7 @@
               <view class="shot-index">{{key + 1}}</view>
               <view class="shot-info">
                 <view class="shot-title">{{item.stage.name}}</view>
-                <view class="shot-meta">时长：{{item.reference.timeStart}}-{{item.reference.timeEnd}}秒</view>
+                <!-- <view class="shot-meta">时长：{{item.reference.timeStart}}-{{item.reference.timeEnd}}秒</view> -->
               </view>
               <view class="shot-status-box orange">
                 <image
@@ -142,7 +142,11 @@
               <view class="shot-label">视频内文案：</view>
               <view class="shot-text">{{item?.content?.textInVideo}}</view>
             </view>
-            <view class="shot-content-img">
+			<view class="shot-content">
+			  <view class="shot-label">画面解读：</view>
+			  <view class="shot-text">{{item?.desc}}</view>
+			</view>
+            <!-- <view class="shot-content-img">
               <view class="shot-label">画面参考：</view>
               <view style="position: relative;">
                 <image
@@ -156,7 +160,7 @@
                   src="/static/play.svg"
                 />
               </view>
-            </view>
+            </view> -->
             <view class="shot-actions">
               <button
                 class="shot-btn outline"
@@ -301,11 +305,11 @@ export default {
       this.hasReachedEnd = false
       this.isVideoLoaded = false
 
-      const timeStart = parseFloat(item.reference.timeStart) || 0
-      const timeEnd = parseFloat(item.reference.timeEnd) || 0
+      const timeStart = parseFloat(item.reference?.timeStart) || 0
+      const timeEnd = parseFloat(item.reference?.timeEnd) || 0
 
       this.currentVideo = {
-        url: item.reference.url,
+        url: item.reference?.url,
         timeStart: timeStart,
         timeEnd: timeEnd
       }
