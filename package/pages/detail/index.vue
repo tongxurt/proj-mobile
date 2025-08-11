@@ -2,8 +2,8 @@
   <view class="detail-root">
     <!-- 骨架屏 -->
     <view
-      v-if="loading"
-      class="skeleton-container"
+        v-if="loading"
+        class="skeleton-container"
     >
       <!-- 脚本信息骨架屏 -->
       <view class="skeleton-main-container">
@@ -44,9 +44,9 @@
 
       <view class="skeleton-shot-list">
         <view
-          class="skeleton-shot-card"
-          v-for="i in 3"
-          :key="i"
+            class="skeleton-shot-card"
+            v-for="i in 3"
+            :key="i"
         >
           <view class="skeleton-shot-header">
             <view class="skeleton-shot-index"></view>
@@ -82,20 +82,20 @@
 
     <!-- 实际内容 -->
     <view
-      v-else
-      class="main-content"
+        v-else
+        class="main-content"
     >
       <view class="main-container">
         <!-- 脚本信息 -->
         <view class="script-header">
           <view class="script-title-row">
-            <view class="script-title">{{data.commodity.title}}</view>
+            <view class="script-title">{{ data.commodity.title }}</view>
             <button class="regen-btn">重新生成</button>
           </view>
-          <view class="script-meta">{{formatTimestamp(data.createdAt)}} 创建</view>
+          <view class="script-meta">{{ formatTimestamp(data.createdAt) }} 创建</view>
           <view class="script-tags">
             <view class="tag pink">美妆护肤</view>
-            <view class="tag blue">{{data.script.segments.length}} 个镜头</view>
+            <view class="tag blue">{{ data.script.segments.length }} 个镜头</view>
           </view>
         </view>
 
@@ -104,35 +104,35 @@
           <view class="requirement-card blue">
             <view class="req-title">
               <image
-                class="req-icon"
-                src="/static/req-script.svg"
-                mode="aspectFit"
+                  class="req-icon"
+                  src="/static/req-script.svg"
+                  mode="aspectFit"
               ></image>
               脚本要求
             </view>
-            <view class="req-desc">{{data.script.style}}</view>
+            <view class="req-desc">{{ data.script.style }}</view>
           </view>
           <view class="requirement-card yellow">
             <view class="req-title">
               <image
-                class="req-icon"
-                src="/static/req-text.svg"
-                mode="aspectFit"
+                  class="req-icon"
+                  src="/static/req-text.svg"
+                  mode="aspectFit"
               ></image>
               文案要求
             </view>
-            <view class="req-desc">{{data.script.contentStyle}}</view>
+            <view class="req-desc">{{ data.script.contentStyle }}</view>
           </view>
           <view class="requirement-card green">
             <view class="req-title">
               <image
-                class="req-icon"
-                src="/static/req-scene.svg"
-                mode="aspectFit"
+                  class="req-icon"
+                  src="/static/req-scene.svg"
+                  mode="aspectFit"
               ></image>
               场景要求
             </view>
-            <view class="req-desc">{{data.script.sceneStyle}}</view>
+            <view class="req-desc">{{ data.script.sceneStyle }}</view>
           </view>
         </view>
       </view>
@@ -140,40 +140,40 @@
       <!-- 分镜头拍摄脚本 -->
       <view class="section-title-row">
         <view class="section-title">分镜头拍摄脚本</view>
-        <view class="section-count">共 {{data.script.segments.length}} 个镜头</view>
+        <view class="section-count">共 {{ data.script.segments.length }} 个镜头</view>
       </view>
       <view class="shot-list">
         <!-- 镜头列表 -->
         <view
-          class="shot-card card"
-          v-for="(item, key) in data.script.segments"
-          :key="key"
+            class="shot-card card"
+            v-for="(item, key) in data.script.segments"
+            :key="key"
         >
           <!-- 折叠状态 -->
           <view
-            v-if="!item.isExpanded"
-            class="shot-collapsed"
-            @click="toggleExpand(item, key)"
+              v-if="!item.isExpanded"
+              class="shot-collapsed"
+              @click="toggleExpand(item, key)"
           >
             <view class="shot-header-collapsed">
-              <view class="shot-index">{{key + 1}}</view>
+              <view class="shot-index">{{ key + 1 }}</view>
               <view class="shot-info-collapsed-row">
                 <view class="shot-info-collapsed">
-                  <view class="shot-title">{{item.stage?.name}}</view>
-                  <view class="shot-desc">{{item?.content?.subtitle}}</view>
+                  <view class="shot-title">{{ item.stage?.name }}</view>
+                  <view class="shot-desc">{{ item?.content?.subtitle }}</view>
                 </view>
-                <!-- <view class="shot-thumbnail">
+                <view class="shot-thumbnail">
                   <image
-                    class="shot-img"
-                    :src="item.reference.coverUrl"
-                    mode="aspectFill"
+                      class="shot-img"
+                      :src="item.reference.coverUrl"
+                      mode="aspectFill"
                   ></image>
                   <image
-                    @click.stop="play(item)"
-                    class="play-btn"
-                    src="/static/play.svg"
+                      @click.stop="play(item)"
+                      class="play-btn"
+                      src="/static/play.svg"
                   />
-                </view> -->
+                </view>
               </view>
               <!-- <view class="expand-icon">
                 <image
@@ -184,29 +184,30 @@
               </view> -->
             </view>
             <view
-              class="shot-actions-collapsed"
-              @click.stop="open(item)"
+                class="shot-actions-collapsed"
+                @click.stop="open(item)"
             >
-              <image src="/static/show.svg" />查看拍摄手法
+              <image src="/static/show.svg"/>
+              查看拍摄手法
             </view>
           </view>
 
           <!-- 展开状态（保持原有内容） -->
           <view v-else>
             <view
-              class="shot-header"
-              @click="toggleExpand(item, key)"
+                class="shot-header"
+                @click="toggleExpand(item, key)"
             >
-              <view class="shot-index">{{key + 1}}</view>
+              <view class="shot-index">{{ key + 1 }}</view>
               <view class="shot-info">
-                <view class="shot-title">{{item.stage.name}}</view>
+                <view class="shot-title">{{ item.stage.name }}</view>
                 <!-- <view class="shot-meta">时长：{{item.reference.timeStart}}-{{item.reference.timeEnd}}秒</view> -->
               </view>
               <view class="shot-status-box orange">
                 <image
-                  class="shot-status"
-                  src="/static/clock.svg"
-                  mode="aspectFit"
+                    class="shot-status"
+                    src="/static/clock.svg"
+                    mode="aspectFit"
                 ></image>
               </view>
               <!-- <view class="expand-icon">
@@ -219,43 +220,45 @@
             </view>
             <view class="shot-content">
               <view class="shot-label">口播文案：</view>
-              <view class="shot-text">{{item?.content?.subtitle}}</view>
+              <view class="shot-text">{{ item?.content?.subtitle }}</view>
             </view>
-            <view class="shot-content">
-              <view class="shot-label">视频内文案：</view>
-              <view class="shot-text">{{item?.content?.textInVideo}}</view>
-            </view>
+<!--            <view class="shot-content">-->
+<!--              <view class="shot-label">视频内文案：</view>-->
+<!--              <view class="shot-text">{{ item?.content?.textInVideo }}</view>-->
+<!--            </view>-->
             <view class="shot-content">
               <view class="shot-label">画面解读：</view>
-              <view class="shot-text">{{item?.desc}}</view>
+              <view class="shot-text">{{ item?.desc }}</view>
             </view>
-            <!-- <view class="shot-content-img">
+            <view class="shot-content-img">
               <view class="shot-label">画面参考：</view>
               <view style="position: relative;">
                 <image
-                  class="shot-img"
-                  :src="item.reference.coverUrl"
-                  mode="aspectFill"
+                    class="shot-img"
+                    :src="item.reference.coverUrl"
+                    mode="aspectFill"
                 ></image>
                 <image
-                  @click.stop="play(item)"
-                  class="play"
-                  src="/static/play.svg"
+                    @click.stop="play(item)"
+                    class="play"
+                    src="/static/play.svg"
                 />
               </view>
-            </view> -->
+            </view>
             <view class="shot-actions">
               <button
-                class="shot-btn outline"
-                @click="open(item)"
+                  class="shot-btn outline"
+                  @click="open(item)"
               >
-                <image src="/static/show.svg" />查看拍摄手法
+                <image src="/static/show.svg"/>
+                查看拍摄手法
               </button>
               <button
-                class="shot-btn"
-                @click="upload"
+                  class="shot-btn"
+                  @click="upload"
               >
-                <image src="/static/upload.svg" />上传素材
+                <image src="/static/upload.svg"/>
+                上传素材
               </button>
             </view>
             <view class="shot-record">
@@ -275,70 +278,70 @@
 
     <!-- 视频播放弹窗 -->
     <view
-      v-if="showVideoPlayer"
-      class="video-popup-mask"
-      @click="closeVideoPlayer"
+        v-if="showVideoPlayer"
+        class="video-popup-mask"
+        @click="closeVideoPlayer"
     ></view>
 
     <view
-      v-if="showVideoPlayer"
-      class="video-popup"
+        v-if="showVideoPlayer"
+        class="video-popup"
     >
       <view
-        class="video-popup-close"
-        @click="closeVideoPlayer"
+          class="video-popup-close"
+          @click="closeVideoPlayer"
       >
         <image
-          src="/static/close.svg"
-          mode="aspectFit"
+            src="/static/close.svg"
+            mode="aspectFit"
         ></image>
       </view>
       <view class="video-container">
         <video
-          id="videoPlayer"
-          :src="currentVideo.url"
-          :controls="true"
-          :autoplay="true"
-          :initial-time="currentVideo.timeStart"
-          :loop="false"
-          class="video-player"
-          @timeupdate="onTimeUpdate"
-          @ended="onVideoEnded"
-          @error="onVideoError"
-          @loadedmetadata="onVideoLoaded"
+            id="videoPlayer"
+            :src="currentVideo.url"
+            :controls="true"
+            :autoplay="true"
+            :initial-time="currentVideo.timeStart"
+            :loop="false"
+            class="video-player"
+            @timeupdate="onTimeUpdate"
+            @ended="onVideoEnded"
+            @error="onVideoError"
+            @loadedmetadata="onVideoLoaded"
         ></video>
       </view>
       <view class="video-info">
-        <text>播放时间: {{currentTime}}s / {{currentVideo.timeEnd}}s</text>
+        <text>播放时间: {{ currentTime }}s / {{ currentVideo.timeEnd }}s</text>
       </view>
     </view>
 
     <!-- 拍摄手法弹窗 -->
     <view
-      v-if="showPhotograph"
-      class="popup-mask"
-      @click="showPhotograph = false"
+        v-if="showPhotograph"
+        class="popup-mask"
+        @click="showPhotograph = false"
     ></view>
     <view
-      v-if="showPhotograph"
-      class="vip-popup"
+        v-if="showPhotograph"
+        class="vip-popup"
     >
       <view
-        class="popup-close"
-        @click="showPhotograph = false"
+          class="popup-close"
+          @click="showPhotograph = false"
       >
         <image
-          src="/static/close.svg"
-          mode="aspectFit"
+            src="/static/close.svg"
+            mode="aspectFit"
         ></image>
       </view>
       <view class="vip-title">拍摄指导</view>
       <view class="vip-content">
         <view
-          v-for="(item, index) in shootingStyle"
-          :key="index"
+            v-for="(item, index) in shootingStyle"
+            :key="index"
         >
-          <view class="vip-content-subTitle">{{item}}</view>
+          <view class="vip-content-subTitle">{{ item }}</view>
         </view>
       </view>
     </view>
@@ -348,8 +351,9 @@
 <script>
 import request from "../../../request";
 import config from "../../../config";
+
 export default {
-  data () {
+  data() {
     return {
       loading: true, // 添加loading状态
       showPhotograph: false,
@@ -364,18 +368,18 @@ export default {
       isVideoLoaded: false,
       hasReachedEnd: false,
       data: {
-        script: { segments: [] },
+        script: {segments: []},
         commodity: {}
       },
       shootingStyle: [],
       formatTimestamp: config.formatTimestamp
     }
   },
-  onLoad (options) {
+  onLoad(options) {
     this.getDetail(options.id)
   },
   methods: {
-    async getDetail (id) {
+    async getDetail(id) {
       try {
         this.loading = true; // 开始加载
         const data = await request({
@@ -399,11 +403,11 @@ export default {
       }
     },
     // 切换展开/折叠状态
-    toggleExpand (item, index) {
+    toggleExpand(item, index) {
       this.$set(item, 'isExpanded', !item.isExpanded)
     },
 
-    play (item) {
+    play(item) {
       this.hasReachedEnd = false
       this.isVideoLoaded = false
 
@@ -413,7 +417,7 @@ export default {
       this.currentVideo = {
         url: item.reference?.url,
         timeStart: timeStart,
-        timeEnd: timeEnd
+        timeEnd: timeEnd + 2
       }
 
       this.currentTime = timeStart
@@ -424,7 +428,7 @@ export default {
       })
     },
 
-    closeVideoPlayer () {
+    closeVideoPlayer() {
       if (this.videoContext) {
         this.videoContext.pause()
       }
@@ -440,11 +444,11 @@ export default {
       this.videoContext = null
     },
 
-    onVideoLoaded (e) {
+    onVideoLoaded(e) {
       this.isVideoLoaded = true
     },
 
-    onTimeUpdate (e) {
+    onTimeUpdate(e) {
       if (!this.isVideoLoaded || this.hasReachedEnd) return
 
       const newTime = e.detail.currentTime
@@ -466,23 +470,23 @@ export default {
       }
     },
 
-    onVideoEnded () {
+    onVideoEnded() {
       this.hasReachedEnd = true
     },
 
-    onVideoError (e) {
+    onVideoError(e) {
       uni.showToast({
         title: '视频播放失败',
         icon: 'none'
       })
     },
 
-    open (item) {
+    open(item) {
       this.shootingStyle = item.shootingStyle.split('\n')
       this.showPhotograph = true
     },
 
-    upload () {
+    upload() {
       uni.chooseImage({
         success: (chooseImageRes) => {
           console.log(chooseImageRes);
@@ -641,10 +645,10 @@ export default {
         height: 50rpx;
         border-radius: 50%;
         background: linear-gradient(
-          90deg,
-          #f0f0f0 25%,
-          #e0e0e0 50%,
-          #f0f0f0 75%
+                90deg,
+                #f0f0f0 25%,
+                #e0e0e0 50%,
+                #f0f0f0 75%
         );
         background-size: 200% 100%;
         animation: skeleton-loading 1.5s infinite;
@@ -658,10 +662,10 @@ export default {
           height: 28rpx;
           width: 60%;
           background: linear-gradient(
-            90deg,
-            #f0f0f0 25%,
-            #e0e0e0 50%,
-            #f0f0f0 75%
+                  90deg,
+                  #f0f0f0 25%,
+                  #e0e0e0 50%,
+                  #f0f0f0 75%
           );
           background-size: 200% 100%;
           animation: skeleton-loading 1.5s infinite;
@@ -673,10 +677,10 @@ export default {
           height: 22rpx;
           width: 40%;
           background: linear-gradient(
-            90deg,
-            #f0f0f0 25%,
-            #e0e0e0 50%,
-            #f0f0f0 75%
+                  90deg,
+                  #f0f0f0 25%,
+                  #e0e0e0 50%,
+                  #f0f0f0 75%
           );
           background-size: 200% 100%;
           animation: skeleton-loading 1.5s infinite;
@@ -689,10 +693,10 @@ export default {
         height: 50rpx;
         border-radius: 50%;
         background: linear-gradient(
-          90deg,
-          #f0f0f0 25%,
-          #e0e0e0 50%,
-          #f0f0f0 75%
+                90deg,
+                #f0f0f0 25%,
+                #e0e0e0 50%,
+                #f0f0f0 75%
         );
         background-size: 200% 100%;
         animation: skeleton-loading 1.5s infinite;
@@ -711,10 +715,10 @@ export default {
         height: 24rpx;
         width: 150rpx;
         background: linear-gradient(
-          90deg,
-          #f0f0f0 25%,
-          #e0e0e0 50%,
-          #f0f0f0 75%
+                90deg,
+                #f0f0f0 25%,
+                #e0e0e0 50%,
+                #f0f0f0 75%
         );
         background-size: 200% 100%;
         animation: skeleton-loading 1.5s infinite;
@@ -726,10 +730,10 @@ export default {
         height: 26rpx;
         width: 90%;
         background: linear-gradient(
-          90deg,
-          #f0f0f0 25%,
-          #e0e0e0 50%,
-          #f0f0f0 75%
+                90deg,
+                #f0f0f0 25%,
+                #e0e0e0 50%,
+                #f0f0f0 75%
         );
         background-size: 200% 100%;
         animation: skeleton-loading 1.5s infinite;
@@ -746,10 +750,10 @@ export default {
         flex: 1;
         height: 70rpx;
         background: linear-gradient(
-          90deg,
-          #f0f0f0 25%,
-          #e0e0e0 50%,
-          #f0f0f0 75%
+                90deg,
+                #f0f0f0 25%,
+                #e0e0e0 50%,
+                #f0f0f0 75%
         );
         background-size: 200% 100%;
         animation: skeleton-loading 1.5s infinite;
@@ -766,10 +770,10 @@ export default {
         height: 24rpx;
         width: 120rpx;
         background: linear-gradient(
-          90deg,
-          #f0f0f0 25%,
-          #e0e0e0 50%,
-          #f0f0f0 75%
+                90deg,
+                #f0f0f0 25%,
+                #e0e0e0 50%,
+                #f0f0f0 75%
         );
         background-size: 200% 100%;
         animation: skeleton-loading 1.5s infinite;
@@ -781,10 +785,10 @@ export default {
         height: 24rpx;
         width: 150rpx;
         background: linear-gradient(
-          90deg,
-          #f0f0f0 25%,
-          #e0e0e0 50%,
-          #f0f0f0 75%
+                90deg,
+                #f0f0f0 25%,
+                #e0e0e0 50%,
+                #f0f0f0 75%
         );
         background-size: 200% 100%;
         animation: skeleton-loading 1.5s infinite;
@@ -808,6 +812,7 @@ export default {
   background: #f7f8fa;
   min-height: 100vh;
   padding-bottom: 120rpx;
+
   .main-content {
     width: 92vw;
     max-width: 700rpx;
@@ -815,12 +820,14 @@ export default {
     padding-top: 24rpx;
     padding-bottom: 32rpx;
   }
+
   .main-container {
     background: #fff;
     padding: 10px;
     border-radius: 30rpx;
     margin-bottom: 30rpx;
   }
+
   .card {
     border-radius: 28rpx;
     background: #fff;
@@ -828,19 +835,23 @@ export default {
     margin-bottom: 32rpx;
     padding: 0;
   }
+
   .script-header {
     padding: 20rpx 10rpx;
     margin-bottom: 28rpx;
+
     .script-title-row {
       display: flex;
       align-items: center;
       margin-bottom: 12rpx;
+
       .script-title {
         font-size: 36rpx;
         font-weight: bold;
         color: #222;
         flex: 1;
       }
+
       .regen-btn {
         background: #3478f6;
         color: #eaf2ff;
@@ -852,22 +863,27 @@ export default {
         border: none;
       }
     }
+
     .script-meta {
       font-size: 24rpx;
       color: #888;
       margin-bottom: 12rpx;
     }
+
     .script-tags {
       display: flex;
+
       .tag {
         font-size: 24rpx;
         padding: 4rpx 18rpx;
         border-radius: 8rpx;
         margin-right: 16rpx;
+
         &.pink {
           background: #ffe6ef;
           color: #e94f8b;
         }
+
         &.blue {
           background: #eaf2ff;
           color: #3478f6;
@@ -875,61 +891,74 @@ export default {
       }
     }
   }
+
   .requirement-list {
     margin-bottom: 32rpx;
+
     .requirement-card {
       display: flex;
       flex-direction: column;
       border-radius: 30rpx;
       padding: 28rpx 32rpx 20rpx 32rpx;
       margin-bottom: 30rpx;
+
       .req-title {
         display: flex;
         align-items: center;
         font-size: 26rpx;
         font-weight: bold;
         margin-bottom: 8rpx;
+
         .req-icon {
           width: 32rpx;
           height: 32rpx;
           margin-right: 8rpx;
         }
       }
+
       .req-desc {
         font-size: 24rpx;
         color: #666;
       }
+
       &.blue {
         background: #eaf2ff;
       }
+
       &.yellow {
         background: #fffbe6;
       }
+
       &.green {
         background: #eaffea;
       }
     }
+
     .requirement-card:last-child {
       margin-bottom: 0;
     }
   }
+
   .section-title-row {
     display: flex;
     align-items: center;
     margin-bottom: 12rpx;
     padding: 0 4rpx;
+
     .section-title {
       font-size: 28rpx;
       font-weight: bold;
       color: #222;
       flex: 1;
     }
+
     .section-count {
       font-size: 24rpx;
       color: #888;
       font-weight: normal;
     }
   }
+
   .shot-list {
     .shot-card {
       border-radius: 24rpx;
@@ -937,10 +966,12 @@ export default {
       background: #fff;
       margin-bottom: 32rpx;
       padding: 36rpx 32rpx 24rpx 32rpx;
+
       .shot-header {
         display: flex;
         align-items: center;
         margin-bottom: 18rpx;
+
         .shot-index {
           width: 50rpx;
           height: 50rpx;
@@ -953,19 +984,23 @@ export default {
           background: #3478f6;
           color: #eaf2ff;
         }
+
         .shot-info {
           flex: 1;
+
           .shot-title {
             font-size: 28rpx;
             font-weight: bold;
             color: #222;
           }
+
           .shot-meta {
             font-size: 22rpx;
             color: #888;
             margin-top: 4rpx;
           }
         }
+
         .shot-status-box {
           width: 50rpx;
           height: 50rpx;
@@ -974,18 +1009,22 @@ export default {
           display: flex;
           justify-content: center;
           align-items: center;
+
           &.green {
             background: #dcfce7;
           }
+
           &.orange {
             background: #ffedd5;
           }
+
           .shot-status {
             width: 30rpx;
             height: 30rpx;
           }
         }
       }
+
       .shot-content-img {
         .shot-label {
           font-size: 24rpx;
@@ -994,12 +1033,14 @@ export default {
           font-weight: bold;
           margin-bottom: 20rpx;
         }
+
         .shot-img {
           width: 100%;
           height: 160rpx;
           border-radius: 12rpx;
           object-fit: cover;
         }
+
         .play {
           position: absolute;
           left: 50%;
@@ -1009,12 +1050,14 @@ export default {
           height: 100rpx;
         }
       }
+
       .shot-content {
         margin-bottom: 14rpx;
         background: #f9fafb;
         border-radius: 20rpx;
         padding: 20rpx;
         margin-bottom: 20rpx;
+
         .shot-label {
           font-size: 24rpx;
           color: #333;
@@ -1023,15 +1066,18 @@ export default {
           font-weight: bold;
           margin-bottom: 15rpx;
         }
+
         .shot-text {
           font-size: 26rpx;
           color: #666;
           flex: 1;
         }
       }
+
       .shot-actions {
         display: flex;
         margin: 18rpx 0 10rpx 0;
+
         .shot-btn {
           flex: 1;
           height: 70rpx;
@@ -1046,41 +1092,49 @@ export default {
           align-items: center;
           justify-content: center;
           gap: 20rpx;
+
           &.outline {
             background: #fff;
             color: #3478f6;
             border: 2rpx solid #3478f6;
           }
+
           &:last-child {
             margin-right: 0;
           }
+
           image {
             width: 30rpx;
             height: 30rpx;
           }
         }
       }
+
       .shot-record {
         margin-top: 35rpx;
         padding-top: 35rpx;
         border-top: 1px solid #eee;
+
         .record-label {
           font-size: 24rpx;
           color: #333;
           font-weight: bold;
           margin-bottom: 10rpx;
         }
+
         .record-empty {
           font-size: 24rpx;
           color: #bbb;
           margin-top: 4rpx;
         }
+
         .record-file {
           display: flex;
           align-items: center;
           font-size: 24rpx;
           color: #bbb;
           margin-top: 4rpx;
+
           .file-box {
             width: 40rpx;
             height: 40rpx;
@@ -1091,6 +1145,7 @@ export default {
             align-items: center;
             justify-content: center;
           }
+
           .file-icon {
             width: 25rpx;
             height: 25rpx;
@@ -1098,10 +1153,12 @@ export default {
         }
       }
     }
+
     .shot-card:last-child {
       margin-bottom: 0;
     }
   }
+
   .footer-bar {
     position: fixed;
     left: 0;
@@ -1113,6 +1170,7 @@ export default {
     padding: 24rpx 36rpx 32rpx 36rpx;
     box-shadow: 0 -2rpx 8rpx rgba(0, 0, 0, 0.03);
     z-index: 10;
+
     .footer-btn {
       flex: 1;
       height: 80rpx;
@@ -1124,17 +1182,20 @@ export default {
       background: #3478f6;
       color: #fff;
       border: none;
+
       &.outline {
         background: #fff;
         color: #3478f6;
         border: 2rpx solid #3478f6;
       }
+
       &:last-child {
         margin-right: 0;
       }
     }
   }
 }
+
 .vip-popup {
   position: fixed;
   left: 50%;
@@ -1148,6 +1209,7 @@ export default {
   z-index: 1001;
   padding: 0 32rpx 32rpx 32rpx;
   animation: popupIn 0.2s;
+
   .popup-close {
     position: absolute;
     right: 32rpx;
@@ -1155,11 +1217,13 @@ export default {
     width: 36rpx;
     height: 36rpx;
     z-index: 2;
+
     image {
       width: 100%;
       height: 100%;
     }
   }
+
   .vip-title {
     text-align: left;
     font-size: 32rpx;
@@ -1167,22 +1231,26 @@ export default {
     color: #222;
     margin: 32rpx 0 24rpx 0;
   }
+
   .vip-content {
     background: #f9fafb;
     padding: 30rpx;
     border-radius: 20rpx;
     max-height: 70vh;
     overflow: auto;
+
     .vip-content-title {
       font-weight: bold;
       font-size: 14px;
       color: #333;
     }
+
     .vip-content-angle {
       color: #999;
       font-size: 12px;
       margin-top: 20rpx;
     }
+
     .vip-content-subTitle {
       color: #666;
       font-size: 13px;
@@ -1191,6 +1259,7 @@ export default {
     }
   }
 }
+
 .popup-mask {
   position: fixed;
   left: 0;
@@ -1200,6 +1269,7 @@ export default {
   background: rgba(0, 0, 0, 0.35);
   z-index: 1000;
 }
+
 @keyframes popupIn {
   from {
     opacity: 0;
@@ -1296,6 +1366,7 @@ export default {
   align-items: flex-start;
   padding: 20rpx 10rpx;
   position: relative;
+
   .shot-index {
     width: 50rpx;
     height: 50rpx;
@@ -1307,6 +1378,7 @@ export default {
     background: #3478f6;
     color: #eaf2ff;
   }
+
   .shot-info-collapsed-row {
     display: flex;
     align-items: center;
@@ -1375,10 +1447,12 @@ export default {
   color: #3478f6;
   padding-left: 100rpx;
   gap: 10rpx;
+
   image {
     width: 30rpx;
     height: 30rpx;
   }
+
   .shot-btn {
     background: #3478f6;
     color: #fff;
