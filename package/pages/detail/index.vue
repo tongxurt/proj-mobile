@@ -1,7 +1,90 @@
 <template>
   <view class="detail-root">
+    <!-- 骨架屏 -->
+    <view
+      v-if="loading"
+      class="skeleton-container"
+    >
+      <!-- 脚本信息骨架屏 -->
+      <view class="skeleton-main-container">
+        <view class="skeleton-script-header">
+          <view class="skeleton-title-row">
+            <view class="skeleton-title"></view>
+            <view class="skeleton-regen-btn"></view>
+          </view>
+          <view class="skeleton-meta"></view>
+          <view class="skeleton-tags">
+            <view class="skeleton-tag"></view>
+            <view class="skeleton-tag"></view>
+          </view>
+        </view>
 
-    <view class="main-content">
+        <!-- 脚本要求骨架屏 -->
+        <view class="skeleton-requirement-list">
+          <view class="skeleton-requirement-card">
+            <view class="skeleton-req-title"></view>
+            <view class="skeleton-req-desc"></view>
+          </view>
+          <view class="skeleton-requirement-card">
+            <view class="skeleton-req-title"></view>
+            <view class="skeleton-req-desc"></view>
+          </view>
+          <view class="skeleton-requirement-card">
+            <view class="skeleton-req-title"></view>
+            <view class="skeleton-req-desc"></view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 分镜头脚本骨架屏 -->
+      <view class="skeleton-section-title-row">
+        <view class="skeleton-section-title"></view>
+        <view class="skeleton-section-count"></view>
+      </view>
+
+      <view class="skeleton-shot-list">
+        <view
+          class="skeleton-shot-card"
+          v-for="i in 3"
+          :key="i"
+        >
+          <view class="skeleton-shot-header">
+            <view class="skeleton-shot-index"></view>
+            <view class="skeleton-shot-info">
+              <view class="skeleton-shot-title"></view>
+              <view class="skeleton-shot-meta"></view>
+            </view>
+            <view class="skeleton-shot-status"></view>
+          </view>
+          <view class="skeleton-shot-content">
+            <view class="skeleton-shot-label"></view>
+            <view class="skeleton-shot-text"></view>
+          </view>
+          <view class="skeleton-shot-content">
+            <view class="skeleton-shot-label"></view>
+            <view class="skeleton-shot-text"></view>
+          </view>
+          <view class="skeleton-shot-content">
+            <view class="skeleton-shot-label"></view>
+            <view class="skeleton-shot-text"></view>
+          </view>
+          <view class="skeleton-shot-actions">
+            <view class="skeleton-shot-btn"></view>
+            <view class="skeleton-shot-btn"></view>
+          </view>
+          <view class="skeleton-shot-record">
+            <view class="skeleton-record-label"></view>
+            <view class="skeleton-record-empty"></view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 实际内容 -->
+    <view
+      v-else
+      class="main-content"
+    >
       <view class="main-container">
         <!-- 脚本信息 -->
         <view class="script-header">
@@ -79,7 +162,7 @@
                   <view class="shot-title">{{item.stage?.name}}</view>
                   <view class="shot-desc">{{item?.content?.subtitle}}</view>
                 </view>
-               <!-- <view class="shot-thumbnail">
+                <!-- <view class="shot-thumbnail">
                   <image
                     class="shot-img"
                     :src="item.reference.coverUrl"
@@ -142,10 +225,10 @@
               <view class="shot-label">视频内文案：</view>
               <view class="shot-text">{{item?.content?.textInVideo}}</view>
             </view>
-			<view class="shot-content">
-			  <view class="shot-label">画面解读：</view>
-			  <view class="shot-text">{{item?.desc}}</view>
-			</view>
+            <view class="shot-content">
+              <view class="shot-label">画面解读：</view>
+              <view class="shot-text">{{item?.desc}}</view>
+            </view>
             <!-- <view class="shot-content-img">
               <view class="shot-label">画面参考：</view>
               <view style="position: relative;">
@@ -263,10 +346,12 @@
 </template>
 
 <script>
+import request from "../../../request";
 import config from "../../../config";
 export default {
   data () {
     return {
+      loading: true, // 添加loading状态
       showPhotograph: false,
       showVideoPlayer: false,
       currentVideo: {
@@ -287,15 +372,32 @@ export default {
     }
   },
   onLoad (options) {
-    const data = JSON.parse(options.data)
-    this.data = data
-
-    // 初始化所有镜头为折叠状态
-    this.data.script.segments.forEach(segment => {
-      this.$set(segment, 'isExpanded', false)
-    })
+    this.getDetail(options.id)
   },
   methods: {
+    async getDetail (id) {
+      try {
+        this.loading = true; // 开始加载
+        const data = await request({
+          url: `/api/pro/v1/tasks/${id}`,
+          method: 'GET',
+        })
+        this.data = data.data
+
+        // 初始化所有镜头为折叠状态
+        this.data.script.segments.forEach(segment => {
+          this.$set(segment, 'isExpanded', false)
+        })
+      } catch (error) {
+        console.error('获取详情失败:', error);
+        uni.showToast({
+          title: '获取详情失败',
+          icon: 'none'
+        });
+      } finally {
+        this.loading = false; // 结束加载
+      }
+    },
     // 切换展开/折叠状态
     toggleExpand (item, index) {
       this.$set(item, 'isExpanded', !item.isExpanded)
@@ -392,6 +494,316 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+/* 骨架屏样式 */
+.skeleton-container {
+  width: 92vw;
+  max-width: 700rpx;
+  margin: 0 auto;
+  padding-top: 24rpx;
+  padding-bottom: 32rpx;
+}
+
+.skeleton-main-container {
+  background: #fff;
+  padding: 10px;
+  border-radius: 30rpx;
+  margin-bottom: 30rpx;
+}
+
+.skeleton-script-header {
+  padding: 20rpx 10rpx;
+  margin-bottom: 28rpx;
+
+  .skeleton-title-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12rpx;
+
+    .skeleton-title {
+      height: 36rpx;
+      background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+      background-size: 200% 100%;
+      animation: skeleton-loading 1.5s infinite;
+      border-radius: 8rpx;
+      flex: 1;
+      margin-right: 20rpx;
+    }
+
+    .skeleton-regen-btn {
+      width: 120rpx;
+      height: 56rpx;
+      background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+      background-size: 200% 100%;
+      animation: skeleton-loading 1.5s infinite;
+      border-radius: 12rpx;
+    }
+  }
+
+  .skeleton-meta {
+    height: 24rpx;
+    width: 200rpx;
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite;
+    border-radius: 6rpx;
+    margin-bottom: 12rpx;
+  }
+
+  .skeleton-tags {
+    display: flex;
+    gap: 16rpx;
+
+    .skeleton-tag {
+      width: 80rpx;
+      height: 32rpx;
+      background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+      background-size: 200% 100%;
+      animation: skeleton-loading 1.5s infinite;
+      border-radius: 8rpx;
+    }
+  }
+}
+
+.skeleton-requirement-list {
+  margin-bottom: 32rpx;
+
+  .skeleton-requirement-card {
+    display: flex;
+    flex-direction: column;
+    border-radius: 30rpx;
+    padding: 28rpx 32rpx 20rpx 32rpx;
+    margin-bottom: 30rpx;
+    background: #f8f9fa;
+
+    .skeleton-req-title {
+      height: 26rpx;
+      width: 120rpx;
+      background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+      background-size: 200% 100%;
+      animation: skeleton-loading 1.5s infinite;
+      border-radius: 6rpx;
+      margin-bottom: 8rpx;
+    }
+
+    .skeleton-req-desc {
+      height: 24rpx;
+      width: 80%;
+      background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+      background-size: 200% 100%;
+      animation: skeleton-loading 1.5s infinite;
+      border-radius: 6rpx;
+    }
+  }
+}
+
+.skeleton-section-title-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12rpx;
+  padding: 0 4rpx;
+
+  .skeleton-section-title {
+    height: 28rpx;
+    width: 200rpx;
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite;
+    border-radius: 6rpx;
+    flex: 1;
+    margin-right: 20rpx;
+  }
+
+  .skeleton-section-count {
+    height: 24rpx;
+    width: 100rpx;
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: skeleton-loading 1.5s infinite;
+    border-radius: 6rpx;
+  }
+}
+
+.skeleton-shot-list {
+  .skeleton-shot-card {
+    border-radius: 24rpx;
+    box-shadow: 0 8rpx 32rpx 0 rgba(0, 0, 0, 0.06);
+    background: #fff;
+    margin-bottom: 32rpx;
+    padding: 36rpx 32rpx 24rpx 32rpx;
+
+    .skeleton-shot-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 18rpx;
+
+      .skeleton-shot-index {
+        width: 50rpx;
+        height: 50rpx;
+        border-radius: 50%;
+        background: linear-gradient(
+          90deg,
+          #f0f0f0 25%,
+          #e0e0e0 50%,
+          #f0f0f0 75%
+        );
+        background-size: 200% 100%;
+        animation: skeleton-loading 1.5s infinite;
+        margin-right: 20rpx;
+      }
+
+      .skeleton-shot-info {
+        flex: 1;
+
+        .skeleton-shot-title {
+          height: 28rpx;
+          width: 60%;
+          background: linear-gradient(
+            90deg,
+            #f0f0f0 25%,
+            #e0e0e0 50%,
+            #f0f0f0 75%
+          );
+          background-size: 200% 100%;
+          animation: skeleton-loading 1.5s infinite;
+          border-radius: 6rpx;
+          margin-bottom: 8rpx;
+        }
+
+        .skeleton-shot-meta {
+          height: 22rpx;
+          width: 40%;
+          background: linear-gradient(
+            90deg,
+            #f0f0f0 25%,
+            #e0e0e0 50%,
+            #f0f0f0 75%
+          );
+          background-size: 200% 100%;
+          animation: skeleton-loading 1.5s infinite;
+          border-radius: 6rpx;
+        }
+      }
+
+      .skeleton-shot-status {
+        width: 50rpx;
+        height: 50rpx;
+        border-radius: 50%;
+        background: linear-gradient(
+          90deg,
+          #f0f0f0 25%,
+          #e0e0e0 50%,
+          #f0f0f0 75%
+        );
+        background-size: 200% 100%;
+        animation: skeleton-loading 1.5s infinite;
+        margin-left: 12rpx;
+      }
+    }
+
+    .skeleton-shot-content {
+      margin-bottom: 14rpx;
+      background: #f9fafb;
+      border-radius: 20rpx;
+      padding: 20rpx;
+      margin-bottom: 20rpx;
+
+      .skeleton-shot-label {
+        height: 24rpx;
+        width: 150rpx;
+        background: linear-gradient(
+          90deg,
+          #f0f0f0 25%,
+          #e0e0e0 50%,
+          #f0f0f0 75%
+        );
+        background-size: 200% 100%;
+        animation: skeleton-loading 1.5s infinite;
+        border-radius: 6rpx;
+        margin-bottom: 15rpx;
+      }
+
+      .skeleton-shot-text {
+        height: 26rpx;
+        width: 90%;
+        background: linear-gradient(
+          90deg,
+          #f0f0f0 25%,
+          #e0e0e0 50%,
+          #f0f0f0 75%
+        );
+        background-size: 200% 100%;
+        animation: skeleton-loading 1.5s infinite;
+        border-radius: 6rpx;
+      }
+    }
+
+    .skeleton-shot-actions {
+      display: flex;
+      margin: 18rpx 0 10rpx 0;
+      gap: 50rpx;
+
+      .skeleton-shot-btn {
+        flex: 1;
+        height: 70rpx;
+        background: linear-gradient(
+          90deg,
+          #f0f0f0 25%,
+          #e0e0e0 50%,
+          #f0f0f0 75%
+        );
+        background-size: 200% 100%;
+        animation: skeleton-loading 1.5s infinite;
+        border-radius: 12rpx;
+      }
+    }
+
+    .skeleton-shot-record {
+      margin-top: 35rpx;
+      padding-top: 35rpx;
+      border-top: 1px solid #eee;
+
+      .skeleton-record-label {
+        height: 24rpx;
+        width: 120rpx;
+        background: linear-gradient(
+          90deg,
+          #f0f0f0 25%,
+          #e0e0e0 50%,
+          #f0f0f0 75%
+        );
+        background-size: 200% 100%;
+        animation: skeleton-loading 1.5s infinite;
+        border-radius: 6rpx;
+        margin-bottom: 10rpx;
+      }
+
+      .skeleton-record-empty {
+        height: 24rpx;
+        width: 150rpx;
+        background: linear-gradient(
+          90deg,
+          #f0f0f0 25%,
+          #e0e0e0 50%,
+          #f0f0f0 75%
+        );
+        background-size: 200% 100%;
+        animation: skeleton-loading 1.5s infinite;
+        border-radius: 6rpx;
+        margin-top: 4rpx;
+      }
+    }
+  }
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
 .detail-root {
   background: #f7f8fa;
   min-height: 100vh;

@@ -270,7 +270,7 @@ export default {
     goToDetail (item) {
       if (item.status === 'completed') {
         uni.navigateTo({
-          url: '/package/pages/detail/index?data=' + JSON.stringify(item)
+          url: '/package/pages/detail/index?id=' + item._id
         })
       } else {
         uni.showToast({ title: '作品正在生成中，请稍后再来查看', icon: 'none' });
