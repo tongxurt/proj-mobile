@@ -68,7 +68,7 @@
         <view class="review-header">
           <image
             class="avatar"
-            src="/static/avatar.jpg"
+            src="/static/user2.jpg"
             mode="aspectFill"
           ></image>
           <view class="review-info">
@@ -85,7 +85,7 @@
         <view class="review-header">
           <image
             class="avatar"
-            src="/static/avatar.jpg"
+            src="/static/user1.jpg"
             mode="aspectFill"
           ></image>
           <view class="review-info">
