@@ -22,7 +22,11 @@
           @click="getList"
         ></image>
       </view>
-      <view class="filter-btn">
+      <view
+        class="filter-btn"
+        :class="{'active': isFilter}"
+        @click="filter"
+      >
         <image
           class="filter-icon"
           src="/static/filter.svg"
@@ -132,9 +136,22 @@
             <!-- <view class="work-tag">{{ item.commodity.brand }}</view> -->
             <view class="work-tag">{{ item.commodity.category }}</view>
           </view>
+          <button
+            open-type="share"
+            :data-item="item"
+            class="share-btn"
+            @click.stop=""
+          >
+            <image
+              class="work-icon"
+              src="/static/share.svg"
+              mode="aspectFit"
+            ></image>
+          </button>
           <image
+            @click.stop="deleteItem(item)"
             class="work-icon"
-            src="/static/share.svg"
+            src="/static/del.svg"
             mode="aspectFit"
           ></image>
         </view>
@@ -184,12 +201,14 @@ export default {
     return {
       searchText: '',
       list: [],
+      copyList: [],
       isLoading: true,
       totalObj: {
         total: 0,
         monthlyCount: 0,
         dailyCount: 0
       },
+      isFilter: false,
       formatTimestamp: config.formatTimestamp,
       steps: [
         '正在分析商品链接',
@@ -205,6 +224,19 @@ export default {
       currentStepIndex: 0,
       stepTimer: null,
       unloaded: false
+    }
+  },
+  onShareAppMessage: (item) => {
+    const promise = new Promise(resolve => {
+      resolve({
+        path: `package/pages/detail/index?id=${item.target.dataset.item._id}`,
+        title: config.name,
+      })
+    })
+    return {
+      path: `package/pages/detail/index?id=${item.target.dataset.item._id}`,
+      title: config.name,
+      promise
     }
   },
   onShow () {
@@ -224,6 +256,27 @@ export default {
     this.unloaded = true
   },
   methods: {
+    async deleteItem (item) {
+      uni.showLoading({
+        title: '删除中...'
+      })
+      await request({
+        url: `/api/pro/v1/tasks/${item._id}`,
+        method: 'PATCH',
+        data: { "action": "delete" }
+      })
+      uni.hideLoading()
+      this.getList()
+    },
+    filter () {
+      if (!this.isFilter) {
+        this.copyList = [...this.list]
+        this.list.sort((a, b) => b.createdAt - a.createdAt)
+      } else {
+        this.list = [...this.copyList]
+      }
+      this.isFilter = !this.isFilter
+    },
     async loadData () {
       this.isLoading = true
       try {
@@ -362,6 +415,9 @@ export default {
       display: flex;
       align-items: center;
       background: #fff;
+      &.active {
+        border: 2rpx solid #3478f6;
+      }
       .filter-icon {
         width: 32rpx;
         height: 32rpx;
@@ -623,6 +679,9 @@ export default {
         .work-tags-box {
           display: flex;
           align-items: center;
+          flex: 1;
+          min-width: 1rpx;
+          overflow: auto;
           .work-tag {
             font-size: 24rpx;
             color: #3478f6;
@@ -630,6 +689,7 @@ export default {
             border-radius: 8rpx;
             padding: 4rpx 16rpx;
             margin-right: 16rpx;
+            white-space: nowrap;
           }
         }
         .work-icon {
@@ -763,5 +823,16 @@ export default {
   100% {
     background-position: 200% 0;
   }
+}
+.share-btn {
+  border: none;
+  padding: 0;
+  margin: 0;
+  background: none;
+  height: 40rpx;
+  line-height: unset;
+}
+.share-btn::after {
+  display: none;
 }
 </style>

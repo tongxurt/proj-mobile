@@ -354,8 +354,10 @@
 <script>
 import request from "../../../request";
 import config from "../../../config";
+import share from "../../../pages/mixins/share";
 
 export default {
+  mixins: [share],
   data () {
     return {
       loading: true, // 添加loading状态
@@ -501,7 +503,7 @@ export default {
 
     upload () {
       uni.chooseVideo({
-        sourceType: ['camera', 'album'],
+        sourceType: ['album'],
         success: (chooseImageRes) => {
           console.log(chooseImageRes);
         }

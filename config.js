@@ -1,5 +1,5 @@
 const host = "https://y.veogo.cn" 
-const name = ''
+const name = '予之文化'
 
 /**
  * 时间戳转换为可读时间格式

@@ -60,7 +60,9 @@
 
 <script>
 import request from "../../../request";
+import share from "../../../pages/mixins/share";
 export default {
+  mixins: [share],
   data () {
     return {
       qrcodeUrl: 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=example' // 可替换为后端生成的二维码

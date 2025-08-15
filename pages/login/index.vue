@@ -86,8 +86,9 @@
 
 <script>
 import request from '../../request.js'
-
+import share from "../mixins/share";
 export default {
+  mixins: [share],
   data () {
     return {
       phoneNumber: '',

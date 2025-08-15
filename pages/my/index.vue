@@ -416,7 +416,9 @@
 
 <script>
 import request from "../../request";
+import share from "../mixins/share";
 export default {
+  mixins: [share],
   data () {
     return {
       showUpgrade: false,
@@ -453,7 +455,7 @@ export default {
         url: '/api/pro/v1/accounts',
         method: 'GET',
       })
-      this.dyUser = data.data
+      this.dyUser = data.data || {}
     },
     async getUserInfo () {
       const data = await request({

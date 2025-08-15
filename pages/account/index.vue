@@ -152,7 +152,9 @@
 </template>
 
 <script>
+import share from "../mixins/share";
 export default {
+  mixins: [share],
   data () {
     return {
       showQRModal: false

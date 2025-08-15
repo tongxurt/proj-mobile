@@ -1,5 +1,19 @@
 <template>
   <view class="container">
+    <view class="header">
+      <view class="header-left">
+        <image
+          class="vip-icon"
+          src="/static/vip.svg"
+          mode="aspectFit"
+        />
+        <view>免费版 (剩余 2 次生成)</view>
+      </view>
+      <view
+        class="header-right"
+        @click="goToMember"
+      >升级会员</view>
+    </view>
     <!-- 绑定抖音账号区域 -->
     <view class="bind-douyin">
       <!-- 骨架屏状态 -->
@@ -149,7 +163,9 @@
 
 <script>
 import request from "../../request";
+import share from "../mixins/share";
 export default {
+  mixins: [share],
   data () {
     return {
       productLink: '',
@@ -306,6 +322,11 @@ export default {
     }
   },
   methods: {
+    goToMember () {
+      uni.navigateTo({
+        url: '/package/pages/memberCenter/index'
+      })
+    },
     async delBind () {
       await request({
         url: `/api/pro/v1/accounts/${this.dyUser._id}`,
@@ -411,7 +432,38 @@ export default {
   background: #f7f8fa;
   min-height: 100vh;
   padding-bottom: 110rpx;
-
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: linear-gradient(90deg, #ff6700, #ff2d38);
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    right: 0;
+    top: 0;
+    padding: 20rpx 40rpx;
+    .header-left {
+      display: flex;
+      align-items: center;
+      .vip-icon {
+        width: 50rpx;
+        height: 50rpx;
+        margin-right: 20rpx;
+      }
+      view {
+        color: #fff;
+        font-size: 26rpx;
+      }
+    }
+    .header-right {
+      font-size: 24rpx;
+      color: #fff;
+      background: rgba($color: #fff, $alpha: 0.6);
+      padding: 5rpx 20rpx;
+      border-radius: 15rpx;
+    }
+  }
   .bind-douyin {
     display: flex;
     align-items: center;

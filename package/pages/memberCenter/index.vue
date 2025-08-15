@@ -73,7 +73,9 @@
 </template>
 
 <script>
+import share from "../../../pages/mixins/share";
 export default {
+  mixins: [share],
   data () {
     return {
     };
@@ -87,7 +89,7 @@ export default {
 .plan-list {
   flex: 1;
   min-height: 0;
-  margin: 0 24rpx;
+  padding: 0 24rpx 24rpx 24rpx;
   overflow: auto;
   .plan-card {
     background: #fff;
@@ -184,6 +186,18 @@ export default {
   }
   .plan-card:last-child {
     margin-bottom: 0;
+  }
+  .plan-card-vip {
+    border: 4rpx solid #ffb300;
+  }
+  .plan-card-pro {
+    border: 4rpx solid #3478f6;
+  }
+  .plan-card-basic {
+    border: 4rpx solid #22c38e;
+  }
+  .plan-card-free {
+    border: 4rpx solid #aaa;
   }
 }
 </style>
