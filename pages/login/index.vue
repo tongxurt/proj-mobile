@@ -47,22 +47,6 @@
       </view>
     </view>
 
-    <!-- 协议选择 -->
-    <view class="agreement">
-      <view class="check">
-        <checkbox-group @change="checkboxValue = !checkboxValue">
-          <checkbox
-            :value="checkboxValue"
-            color="#00C896"
-            style="transform:scale(0.8)"
-          />
-        </checkbox-group>
-      </view>
-      <view class="text">
-        我已阅读并同意<text @click="goToAgreement">用户协议</text> <text @click="goToPrivacy">隐私政策</text>
-      </view>
-    </view>
-
     <!-- 登录按钮 -->
     <view class="login-btn-container">
       <button
@@ -73,6 +57,29 @@
       >
         登 录
       </button>
+      <button
+        class="login-btn"
+        open-type="getPhoneNumber"
+        :disabled="!checkboxValue"
+        :class="{ disabled: !checkboxValue }"
+        @getPhoneNumber="decryptPhoneNumber"
+      >一键登录</button>
+    </view>
+    <!-- 协议选择 -->
+    <view class="agreement">
+      <view class="check">
+        <checkbox-group @change="checkboxValue = !checkboxValue">
+          <checkbox
+            :value="checkboxValue"
+            :checked="checkboxValue"
+            color="#00C896"
+            style="transform:scale(0.8)"
+          />
+        </checkbox-group>
+      </view>
+      <view class="text">
+        我已阅读并同意<text @click="goToAgreement">用户协议</text> <text @click="goToPrivacy">隐私政策</text>
+      </view>
     </view>
   </view>
 </template>
@@ -85,7 +92,7 @@ export default {
     return {
       phoneNumber: '',
       verifyCode: '',
-      checkboxValue: false,
+      checkboxValue: true,
       countdown: 0,
       timer: null,
       id: ''
@@ -121,6 +128,39 @@ export default {
     }
   },
   methods: {
+    decryptPhoneNumber (e) {
+      if (!e.detail.code) return
+      const that = this
+      uni.getUserInfo({
+        success: function (res) {
+          uni.login({
+            provider: "weixin",
+            success (v) {
+              console.log(v);
+
+              // if (v.code) {
+              //   //发起网络请求
+              //   request({
+              //     url: `/api/user`,
+              //     method: 'post',
+              //     data: {
+              //       loginCode: v.code,
+              //       phoneCode: e.detail.code,
+              //       logo: res.userInfo.avatarUrl,
+              //       from: that.id
+              //     },
+              //   }).then(res => {
+              //     uni.setStorageSync('userInfo', JSON.stringify(res.data))
+              //     uni.switchTab({ url: '/pages/home/home' })
+              //   })
+              // } else {
+              //   console.log('登录失败！' + res.errMsg)
+              // }
+            }
+          })
+        }
+      })
+    },
     // 获取验证码
     async getVerifyCode () {
       if (!this.canGetCode) {
@@ -364,8 +404,8 @@ export default {
 .agreement {
   display: flex;
   align-items: center;
-  margin-bottom: 120rpx;
   padding: 0 8rpx;
+  margin-top: 20rpx;
 }
 
 .check {
@@ -403,6 +443,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-top: 50rpx;
 }
 
 .login-btn:not(.disabled) {

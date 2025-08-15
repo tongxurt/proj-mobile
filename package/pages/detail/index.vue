@@ -500,7 +500,8 @@ export default {
     },
 
     upload () {
-      uni.chooseImage({
+      uni.chooseVideo({
+        sourceType: ['camera', 'album'],
         success: (chooseImageRes) => {
           console.log(chooseImageRes);
         }
@@ -1340,7 +1341,7 @@ export default {
 
 .video-container {
   width: 100%;
-  height: 0;
+  height: 350rpx;
   padding-bottom: 56.25%; /* 16:9 宽高比 */
   position: relative;
 }

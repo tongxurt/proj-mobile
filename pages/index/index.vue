@@ -173,86 +173,67 @@ export default {
       scenes: [
         {
           mainText: '都说老婆美丽才是老公最大的面子',
-          subText: '系窝瓶子里拍丝质展示美颜脸部展',
-          action: '查看拍摄手法',
+          subText: '窝瓶子里捞丝展示/美颜脸部展示',
           thumbnail: '/static/avatar.jpg'
         },
         {
           mainText: '我老公现在真就每天雷打不动让我喝一瓶燕窝',
-          subText: '喝燕窝 (这部分不用口播,直接配音就',
+          subText: '喝燕窝 (这部分不用口播,直接配音就行）',
           thumbnail: '/static/avatar.jpg',
-          action: '查看拍摄手法',
         },
         {
           mainText: '小仙炖的鲜炖燕窝我是自己吃了两个月才给你们分享的',
-          subText: '展示燕窝产品包装',
-          action: '查看拍摄手法',
+          subText: '拿着一瓶燕窝口播',
           thumbnail: '/static/avatar.jpg'
         },
         {
           mainText: '对比两个月前的变化真的是肉眼可见',
-          action: '查看拍摄手法',
-          subText: '展示使用前后对比效果',
+          subText: '展示平时打扮的美美的和出去旅游美美的照片或视频',
           thumbnail: '/static/avatar.jpg'
         },
         {
           mainText: '它这每一瓶都是独立小罐装',
-          action: '查看拍摄手法',
-          subText: '展示独立包装设计',
+          subText: '真人出镜-打开盖子展示',
           thumbnail: '/static/avatar.jpg'
         },
         {
           mainText: '掀开盖子燕窝丝根根分明的',
-          action: '查看拍摄手法',
-          subText: '展示燕窝丝质细节',
+          subText: '真人出镜-燕窝捞丝展示',
           thumbnail: '/static/avatar.jpg'
         },
         {
           mainText: '用的全是马来和印尼那边可溯源的燕窝',
-          action: '查看拍摄手法',
-          subText: '展示产地溯源信息',
+          subText: '扫描溯源码，展示产地',
           thumbnail: '/static/avatar.jpg'
         },
         {
           mainText: '而且配料很干净啊只有燕窝、冰糖和水',
           subText: '展示配料表',
-          action: '查看拍摄手法',
           thumbnail: '/static/avatar.jpg'
         },
         {
           mainText: '而且特有的鲜炖工艺直接把三倍活性蛋白都锁在瓶里',
-          subText: '展示工艺特点',
-          action: '查看拍摄手法',
+          subText: '倒出燕窝展示',
           thumbnail: '/static/avatar.jpg'
         },
         {
           mainText: '这可比你说一百遍"多喝热水"实在多了',
-          subText: '对比传统养生方式',
-          action: '查看拍摄手法',
+          subText: '再次捞丝展示，注意画面要展示出燕丝粗长',
           thumbnail: '/static/avatar.jpg'
         },
         {
           mainText: '关键现在买两箱还能送你这个同款面膜',
-          subText: '展示促销活动',
-          action: '查看拍摄手法',
+          subText: '真人出镜-拿着面膜口播',
           thumbnail: '/static/avatar.jpg'
         },
         {
           mainText: '所以说有些钱不能省,但也不用多花',
-          subText: '强调性价比',
-          action: '查看拍摄手法',
+          subText: '箱子里拿出一瓶口播',
           thumbnail: '/static/avatar.jpg'
         },
         {
           mainText: '以后每天她掀开瓶盖的那瞬间',
-          subText: '展示使用场景',
-          action: '查看拍摄手法',
-          thumbnail: '/static/avatar.jpg'
-        },
-        {
-          mainText: '保准觉得你这人......啧,靠谱',
-          subText: '情感共鸣结尾',
-          action: '查看拍摄手法',
+          subText: '边开盖子边口播，最后一句表情可以丰富一点',
           thumbnail: '/static/avatar.jpg'
         }
       ],
@@ -261,25 +242,21 @@ export default {
         {
           mainText: '妈妈无论多少岁也都是女孩子',
           subText: '拿着一瓶燕窝边打开边口播',
-          action: '查看拍摄手法',
           thumbnail: '/static/avatar.jpg'
         },
         {
           mainText: '操劳半生的她比谁都值得被宠成公主',
           subText: '妈妈出镜吃燕窝',
-          action: '查看拍摄手法',
           thumbnail: '/static/avatar.jpg'
         },
         {
           mainText: '女神节快到了可别忘记给妈妈也准备一份礼物',
           subText: '一边说话一边拿出礼盒',
-          action: '查看拍摄手法',
           thumbnail: '/static/avatar.jpg'
         },
         {
           mainText: '小仙炖新出的精炖燕窝限定礼盒',
           subText: '礼盒展示特写',
-          action: '查看拍摄手法',
           thumbnail: '/static/avatar.jpg'
         },
         {
@@ -291,43 +268,31 @@ export default {
         {
           mainText: '里面5瓶精炖燕窝和5瓶爆珠的cp组合',
           subText: '开盖把燕窝倒出来+贴图展示',
-          action: '查看拍摄手法',
           thumbnail: '/static/avatar.jpg'
         },
         {
           mainText: '每瓶都是用马来和印尼的金丝燕窝现炖',
           subText: '捞丝展示',
-          action: '查看拍摄手法',
           thumbnail: '/static/avatar.jpg'
         },
         {
           mainText: '你看这燕丝都稠到能挂勺',
           subText: '燕窝瓶子里捞丝展示',
-          action: '查看拍摄手法',
           thumbnail: '/static/avatar.jpg'
         },
         {
           mainText: '配料表还特别的干净,给妈妈吃就很放心',
           subText: '礼盒背面配料表特写',
-          action: '查看拍摄手法',
           thumbnail: '/static/avatar.jpg'
         },
         {
           mainText: '而且燕窝对女人来说是特别好的',
           subText: '以妈妈为背景,拿一瓶燕窝打开盖子把燕窝递给妈妈',
-          action: '查看拍摄手法',
           thumbnail: '/static/avatar.jpg'
         },
         {
           mainText: '趁着女神节赶紧给妈妈把这个章子怡同款的燕窝礼盒给安排上',
           subText: '一边说话一边盖上礼盒,后拿着礼盒口播推荐',
-          action: '查看拍摄手法',
-          thumbnail: '/static/avatar.jpg'
-        },
-        {
-          mainText: '这一盒可比转账红包有温度多了!',
-          subText: '推荐',
-          action: '查看拍摄手法',
           thumbnail: '/static/avatar.jpg'
         }
       ],
@@ -373,6 +338,9 @@ export default {
         uni.showToast({ title: '请粘贴商品链接', icon: 'none' });
         return;
       }
+      uni.showLoading({
+        title: '加载中'
+      });
       const data = await request({
         url: '/api/pro/v1/tasks',
         method: 'POST',
@@ -380,6 +348,7 @@ export default {
           commodityUrl: this.productLink
         }
       })
+      uni.hideLoading();
       if (!data || !data.data) {
         uni.showToast({ title: '失败', icon: 'none' });
         return
