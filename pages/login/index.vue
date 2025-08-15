@@ -62,7 +62,7 @@
         open-type="getPhoneNumber"
         :disabled="!checkboxValue"
         :class="{ disabled: !checkboxValue }"
-        @getPhoneNumber="decryptPhoneNumber"
+        @getphonenumber="decryptPhoneNumber"
       >一键登录</button>
     </view>
     <!-- 协议选择 -->
@@ -129,6 +129,9 @@ export default {
   },
   methods: {
     decryptPhoneNumber (e) {
+
+      console.log('e.detail.code', e.detail.code)
+
       if (!e.detail.code) return
       const that = this
       uni.getUserInfo({
