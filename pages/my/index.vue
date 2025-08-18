@@ -1,5 +1,10 @@
 <template>
   <view class="my-root">
+    <Login
+      v-if="isLogin"
+      @hide="isLogin = false"
+      @ok="isLogin = false; init()"
+    />
     <view class="main-content">
       <!-- 会员信息卡 -->
       <view class="card user-card">
@@ -417,10 +422,15 @@
 <script>
 import request from "../../request";
 import share from "../mixins/share";
+import Login from "../../components/login/index.vue";
 export default {
   mixins: [share],
+  components: {
+    Login
+  },
   data () {
     return {
+      isLogin: false,
       showUpgrade: false,
       showVip: false,
       showPlanPopup: false,
@@ -429,6 +439,10 @@ export default {
     }
   },
   methods: {
+    init () {
+      this.getDyInfo()
+      this.getUserInfo()
+    },
     upgradeNow () {
       uni.showToast({ title: '升级成功', icon: 'success' })
       this.showUpgrade = false
@@ -455,6 +469,10 @@ export default {
         url: '/api/pro/v1/accounts',
         method: 'GET',
       })
+      if (data.code === "UNAUTHORIZED") {
+        this.isLogin = true
+        return
+      }
       this.dyUser = data.data || {}
     },
     async getUserInfo () {
@@ -462,6 +480,10 @@ export default {
         url: '/api/v1/users/me',
         method: 'GET',
       })
+      if (data.code === "UNAUTHORIZED") {
+        this.isLogin = true
+        return
+      }
       this.userInfo = data.data
     }
   },
@@ -472,8 +494,7 @@ export default {
         selected: 3
       });
     }
-    this.getDyInfo()
-    this.getUserInfo()
+    this.init()
   }
 }
 </script>

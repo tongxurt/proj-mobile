@@ -1,5 +1,10 @@
 <template>
   <view class="history-container">
+    <Login
+      v-if="isLogin"
+      @hide="isLogin = false"
+      @ok="isLogin = false; loadData()"
+    />
     <!-- 标题和副标题 -->
     <view class="header">
       <view class="title">我的作品</view>
@@ -163,20 +168,20 @@
         >
           <view class="steps-list">
             <view
-              v-for="(step, index) in getDisplaySteps()"
+              v-for="(step, index) in getSetps(item)"
               :key="index"
               class="step-item"
-              :class="{ 'completed': index < currentStepIndex, 'current': index === currentStepIndex }"
+              :class="{ 'completed': step.status === 'done', 'current': step.status !== 'done' }"
             >
               <view class="step-icon">
                 <image
-                  v-if="index < currentStepIndex"
+                  v-if="step.status === 'done'"
                   class="check-icon"
                   src="/static/check-white.svg"
                   mode="aspectFit"
                 ></image>
                 <view
-                  v-else-if="index === currentStepIndex"
+                  v-else
                   class="loading-dots"
                 >
                   <view class="dot dot1"></view>
@@ -184,7 +189,7 @@
                   <view class="dot dot3"></view>
                 </view>
               </view>
-              <text class="step-text">{{ step }}</text>
+              <text class="step-text">{{ step.step }}</text>
             </view>
           </view>
         </view>
@@ -196,9 +201,14 @@
 <script>
 import request from "../../request";
 import config from "../../config";
+import Login from "../../components/login/index.vue";
 export default {
+  components: {
+    Login
+  },
   data () {
     return {
+      isLogin: false,
       searchText: '',
       list: [],
       copyList: [],
@@ -296,7 +306,11 @@ export default {
           url: `/api/pro/v1/tasks?keyword=${this.searchText}`,
           method: 'GET',
         })
-        this.list = data.data.list
+        if (data.code === "UNAUTHORIZED") {
+          this.isLogin = true
+          return
+        }
+        this.list = data.data.list || []
         // 重新启动步骤轮换（如果有未完成的任务）
         this.startStepRotation()
         return data
@@ -311,6 +325,10 @@ export default {
           url: '/api/pro/v1/task-summary',
           method: 'GET',
         })
+        if (data.code === "UNAUTHORIZED") {
+          this.isLogin = true
+          return
+        }
         this.totalObj.total = data.data.total || 0
         this.totalObj.monthlyCount = data.data.monthlyCount || 0
         this.totalObj.dailyCount = data.data.dailyCount || 0
@@ -321,16 +339,24 @@ export default {
       }
     },
     goToDetail (item) {
-      if (item.status === 'completed') {
-        uni.navigateTo({
-          url: '/package/pages/detail/index?id=' + item._id
-        })
-      } else {
-        uni.showToast({ title: '作品正在生成中，请稍后再来查看', icon: 'none' });
-      }
+      uni.navigateTo({
+        url: '/package/pages/detail/index?id=' + item._id
+      })
+      // if (item.status === 'completed') {
+      //   uni.navigateTo({
+      //     url: '/package/pages/detail/index?id=' + item._id
+      //   })
+      // } else {
+      //   uni.showToast({ title: '作品正在生成中，请稍后再来查看', icon: 'none' });
+      // }
     },
-    getCurrentLoadingText () {
-      return this.steps[this.currentStepIndex] || '脚本生成中...'
+    getSetps (item) {
+      return Object.entries(item.steps).map(([key, value]) => {
+        return {
+          step: value.title,
+          status: value.status
+        }
+      }).filter(item => item.status !== 'waiting')
     },
     getDisplaySteps () {
       // 返回当前应该显示的步骤（从0到currentStepIndex）

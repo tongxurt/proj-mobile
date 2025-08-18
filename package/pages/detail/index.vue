@@ -1,5 +1,10 @@
 <template>
   <view class="detail-root">
+    <Login
+      v-if="isLogin"
+      @hide="isLogin = false"
+      @ok="isLogin = false; init()"
+    />
     <!-- 骨架屏 -->
     <view
       v-if="loading"
@@ -80,6 +85,37 @@
       </view>
     </view>
 
+    <view
+      v-else-if="data.status !== 'completed'"
+      class="work-loading"
+    >
+      <view class="steps-list">
+        <view
+          v-for="(step, index) in getSetps()"
+          :key="index"
+          class="step-item"
+          :class="{ 'completed': step.status === 'done', 'current': step.status !== 'done' }"
+        >
+          <view class="step-icon">
+            <image
+              v-if="step.status === 'done'"
+              class="check-icon"
+              src="/static/check-white.svg"
+              mode="aspectFit"
+            ></image>
+            <view
+              v-else
+              class="loading-dots"
+            >
+              <view class="dot dot1"></view>
+              <view class="dot dot2"></view>
+              <view class="dot dot3"></view>
+            </view>
+          </view>
+          <text class="step-text">{{ step.step }}</text>
+        </view>
+      </view>
+    </view>
     <!-- 实际内容 -->
     <view
       v-else
@@ -271,12 +307,12 @@
           </view>
         </view>
       </view>
-    </view>
 
-    <!-- 底部操作栏 -->
-    <view class="footer-bar">
-      <button class="footer-btn outline">导出脚本</button>
-      <button class="footer-btn">一键成片</button>
+      <!-- 底部操作栏 -->
+      <view class="footer-bar">
+        <button class="footer-btn outline">导出脚本</button>
+        <button class="footer-btn">一键成片</button>
+      </view>
     </view>
 
     <!-- 视频播放弹窗 -->
@@ -355,11 +391,16 @@
 import request from "../../../request";
 import config from "../../../config";
 import share from "../../../pages/mixins/share";
+import Login from "../../../components/login/index.vue";
 
 export default {
   mixins: [share],
+  components: {
+    Login
+  },
   data () {
     return {
+      isLogin: false,
       loading: true, // 添加loading状态
       showPhotograph: false,
       showVideoPlayer: false,
@@ -377,42 +418,65 @@ export default {
         commodity: {}
       },
       shootingStyle: [],
-      formatTimestamp: config.formatTimestamp
+      formatTimestamp: config.formatTimestamp,
+      unloaded: false
     }
   },
   onLoad (options) {
-    this.getDetail(options.id)
+    this.unloaded = false
+    this.id = options.id
+    this.init()
+  },
+  onHide () {
+    this.unloaded = true
+  },
+  onUnload () {
+    this.unloaded = true
   },
   methods: {
+    init () {
+      this.getDetail(this.id)
+    },
     async regen () {
       const data = await request({
         url: `/api/pro/v1/tasks/${this.data._id}`,
         method: 'PATCH',
         data: { "action": "refresh" }
       })
-      console.log(data);
-      // this.data = data.data
+      if (data.code === "UNAUTHORIZED") {
+        this.isLogin = true
+        return
+      }
       this.getDetail(this.data._id)
     },
-    async getDetail (id) {
+    async getDetail (id, isRefresh = false) {
       try {
-        this.loading = true; // 开始加载
+        if (!isRefresh) {
+          this.loading = true
+        }
         const data = await request({
           url: `/api/pro/v1/tasks/${id}`,
           method: 'GET',
         })
+        if (data.code === "UNAUTHORIZED") {
+          this.isLogin = true
+          return
+        }
         this.data = data.data
-
+        if (this.data.status !== 'completed') {
+          this.loading = false
+          setTimeout(() => {
+            if (this.unloaded) return
+            this.getDetail(id, true)
+          }, 10000);
+          return
+        }
         // 初始化所有镜头为折叠状态
         this.data.script.segments.forEach(segment => {
           this.$set(segment, 'isExpanded', false)
         })
       } catch (error) {
         console.error('获取详情失败:', error);
-        uni.showToast({
-          title: '获取详情失败',
-          icon: 'none'
-        });
       } finally {
         this.loading = false; // 结束加载
       }
@@ -508,7 +572,15 @@ export default {
           console.log(chooseImageRes);
         }
       });
-    }
+    },
+    getSetps () {
+      return Object.entries(this.data.steps).map(([key, value]) => {
+        return {
+          step: value.title,
+          status: value.status
+        }
+      }).filter(item => item.status !== 'waiting')
+    },
   }
 }
 </script>
@@ -1547,6 +1619,116 @@ export default {
 
   &:hover {
     box-shadow: 0 12rpx 40rpx 0 rgba(0, 0, 0, 0.1);
+  }
+}
+// 加载中状态样式
+.work-loading {
+  background: #f7f8fa;
+  border-radius: 12rpx;
+  padding: 20rpx;
+  margin-bottom: 16rpx;
+
+  .steps-list {
+    .step-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 16rpx;
+      opacity: 0;
+      animation: stepFadeIn 0.5s ease-out forwards;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+
+      .step-icon {
+        width: 32rpx;
+        height: 32rpx;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 16rpx;
+        flex-shrink: 0;
+
+        .check-icon {
+          width: 18rpx;
+          height: 18rpx;
+        }
+
+        .loading-dots {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+
+          .dot {
+            width: 8rpx;
+            height: 8rpx;
+            border-radius: 50%;
+            background: #3478f6;
+            margin: 0 3rpx;
+            animation: loading-bounce 1.4s infinite ease-in-out both;
+
+            &.dot1 {
+              animation-delay: -0.32s;
+            }
+            &.dot2 {
+              animation-delay: -0.16s;
+            }
+            &.dot3 {
+              animation-delay: 0s;
+            }
+          }
+        }
+      }
+
+      .step-text {
+        font-size: 26rpx;
+        line-height: 1.4;
+        flex: 1;
+      }
+
+      &.completed {
+        .step-icon {
+          background: #00c48f;
+        }
+        .step-text {
+          color: #666;
+        }
+      }
+
+      &.current {
+        .step-icon {
+          background: #f0f8ff;
+          // border: 2rpx solid #3478f6;
+        }
+        .step-text {
+          color: #222;
+          font-weight: 500;
+        }
+      }
+    }
+  }
+}
+@keyframes stepFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(10rpx);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes loading-bounce {
+  0%,
+  80%,
+  100% {
+    transform: scale(0.8);
+    opacity: 0.5;
+  }
+  40% {
+    transform: scale(1);
+    opacity: 1;
   }
 }
 </style>

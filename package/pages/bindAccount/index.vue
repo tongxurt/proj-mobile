@@ -1,5 +1,10 @@
 <template>
   <view class="bind-container">
+    <Login
+      v-if="isLogin"
+      @hide="isLogin = false"
+      @ok="isLogin = false; init()"
+    />
     <!-- 扫码绑定内容 -->
     <view class="scan-content">
       <view class="title">扫码授权绑定</view>
@@ -35,12 +40,15 @@
           <view>2. 点击右上角扫一扫</view>
           <view>3. 扫描上方二维码</view>
           <view>4. 在手机上确认授权</view>
+          <view>5. 重新回到小程序</view>
         </view>
       </view>
       <button
         class="confirm-btn"
+        :disabled="!qrcodeUrl"
+        :class="{ 'disabled': !qrcodeUrl }"
         @click="confirmAuth"
-      >确认授权</button>
+      >保存到相册</button>
       <view class="protocol">
         点击确认授权即表示同意
         <text
@@ -61,25 +69,67 @@
 <script>
 import request from "../../../request";
 import share from "../../../pages/mixins/share";
+import Login from "../../../components/login/index.vue";
 export default {
   mixins: [share],
+  components: {
+    Login
+  },
   data () {
     return {
-      qrcodeUrl: 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=example' // 可替换为后端生成的二维码
+      isLogin: false,
+      qrcodeUrl: '' // 可替换为后端生成的二维码
     }
   },
+  onLoad () {
+    this.refreshQrcode()
+  },
   methods: {
-    refreshQrcode () {
+    async refreshQrcode () {
+      uni.showLoading({
+        title: '加载中...',
+      })
+      const data = await request({
+        url: `/api/pro/v1/binding-qrcode`,
+        method: 'GET',
+      })
       // 刷新二维码逻辑
-      this.qrcodeUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=' + Math.random();
+      try {
+        const base64Data = data.data.qrCode
+        const fsm = uni.getFileSystemManager()
+        const filePath = `${uni.env.USER_DATA_PATH}/qrcode_${Date.now()}.png`
+        const buffer = uni.base64ToArrayBuffer(base64Data.replace(/^data:image\/\w+;base64,/, ''))
+        fsm.writeFileSync(filePath, buffer, 'binary')
+        this.qrcodeUrl = filePath
+      } catch (error) {
+        uni.showToast({
+          title: '二维码生成失败',
+          icon: 'none'
+        })
+      }
+      uni.hideLoading()
+      if (data.code === "UNAUTHORIZED") {
+        this.isLogin = true
+        return
+      }
     },
     async confirmAuth () {
-      await request({
-        url: '/api/pro/v1/accounts',
-        method: 'POST',
+      uni.saveImageToPhotosAlbum({
+        filePath: this.qrcodeUrl,
+        success: (res) => {
+          console.log("saveImageToPhotosAlbum success", JSON.stringify(res));
+          uni.showToast({
+            icon: "none",
+            title: "图片保存成功，请到手机相册查看"
+          });
+        },
+        fail: (err) => {
+          uni.showToast({
+            icon: "none",
+            title: "保存图片到相册失败"
+          });
+        }
       })
-      uni.showToast({ title: '授权成功', icon: 'success' });
-      uni.navigateBack()
     },
     openPrivacy () {
       // 跳转隐私政策
@@ -232,6 +282,9 @@ export default {
     line-height: 80rpx;
     font-weight: bold;
     margin-bottom: 16rpx;
+    &.disabled {
+      background: #ccc;
+    }
   }
   .protocol {
     font-size: 22rpx;

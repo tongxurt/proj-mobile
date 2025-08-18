@@ -1,94 +1,94 @@
 <template>
-  <view class="content">
-    <view class="head">
-      <image
-        class="logo"
-        src="/static/logo.jpg"
-      ></image>
-    </view>
-
-    <!-- 手机号输入区域 -->
-    <view class="form-section">
-      <!-- 手机号输入 -->
-      <view class="input-group phone-group">
-        <view class="country-code">
-          <text>+86</text>
-          <image
-            class="arrow-icon"
-            src="/static/arrow.svg"
-          ></image>
-        </view>
-        <input
-          class="phone-input"
-          v-model="phoneNumber"
-          placeholder="请输入手机号"
-          type="number"
-          maxlength="11"
-        />
-      </view>
-
-      <!-- 验证码输入 -->
-      <view class="input-group">
-        <input
-          class="code-input"
-          v-model="verifyCode"
-          placeholder="请输入验证码"
-          type="number"
-          maxlength="6"
-        />
-        <button
-          class="get-code-btn"
-          :class="{ disabled: !canGetCode || countdown > 0 }"
-          :disabled="!canGetCode || countdown > 0"
-          @click="getVerifyCode"
-        >
-          {{ countdown > 0 ? `${countdown}s` : '获取验证码' }}
-        </button>
-      </view>
-    </view>
-
-    <!-- 登录按钮 -->
-    <view class="login-btn-container">
-      <button
-        class="login-btn"
-        :class="{ disabled: !canLogin }"
-        :disabled="!canLogin"
-        @click="handleLogin"
-      >
-        登 录
-      </button>
-      <button
-        class="login-btn"
-        open-type="getPhoneNumber"
-        :disabled="!checkboxValue"
-        :class="{ disabled: !checkboxValue }"
-        @getphonenumber="decryptPhoneNumber"
-      >一键登录</button>
-    </view>
-    <!-- 协议选择 -->
-    <view class="agreement">
-      <view class="check">
-        <checkbox-group @change="checkboxValue = !checkboxValue">
-          <checkbox
-            :value="checkboxValue"
-            :checked="checkboxValue"
-            color="#00C896"
-            style="transform:scale(0.8)"
+  <view
+    class="login-bg"
+    @click="hide"
+  >
+    <view
+      class="content"
+      @click.stop=""
+    >
+      <!-- 手机号输入区域 -->
+      <view class="form-section">
+        <!-- 手机号输入 -->
+        <view class="input-group phone-group">
+          <view class="country-code">
+            <text>+86</text>
+            <image
+              class="arrow-icon"
+              src="/static/arrow.svg"
+            ></image>
+          </view>
+          <input
+            class="phone-input"
+            v-model="phoneNumber"
+            placeholder="请输入手机号"
+            type="number"
+            maxlength="11"
           />
-        </checkbox-group>
+        </view>
+
+        <!-- 验证码输入 -->
+        <view class="input-group">
+          <input
+            class="code-input"
+            v-model="verifyCode"
+            placeholder="请输入验证码"
+            type="number"
+            maxlength="6"
+          />
+          <button
+            class="get-code-btn"
+            :class="{ disabled: !canGetCode || countdown > 0 }"
+            :disabled="!canGetCode || countdown > 0"
+            @click="getVerifyCode"
+          >
+            {{ countdown > 0 ? `${countdown}s` : '获取验证码' }}
+          </button>
+        </view>
       </view>
-      <view class="text">
-        我已阅读并同意<text @click="goToAgreement">用户协议</text> <text @click="goToPrivacy">隐私政策</text>
+
+      <!-- 登录按钮 -->
+      <view class="login-btn-container">
+        <button
+          class="login-btn"
+          :class="{ disabled: !canLogin }"
+          :disabled="!canLogin"
+          @click="handleLogin"
+        >
+          登 录
+        </button>
+        <button
+          class="login-btn"
+          open-type="getPhoneNumber"
+          :disabled="!checkboxValue"
+          :class="{ disabled: !checkboxValue }"
+          @getphonenumber="decryptPhoneNumber"
+        >一键登录</button>
+      </view>
+      <!-- 协议选择 -->
+      <view class="agreement">
+        <view class="check">
+          <checkbox-group @change="checkboxValue = !checkboxValue">
+            <checkbox
+              :value="checkboxValue"
+              :checked="checkboxValue"
+              color="#00C896"
+              style="transform:scale(0.8)"
+            />
+          </checkbox-group>
+        </view>
+        <view class="text">
+          我已阅读并同意<text @click="goToAgreement">用户协议</text> <text @click="goToPrivacy">隐私政策</text>
+        </view>
       </view>
     </view>
   </view>
 </template>
-
 <script>
-import request from '../../request.js'
-import share from "../mixins/share";
+import request from "../../request";
 export default {
-  mixins: [share],
+  name: 'login',
+  emits: ['hide', "ok"],
   data () {
     return {
       phoneNumber: '',
@@ -111,17 +111,6 @@ export default {
         this.checkboxValue
     }
   },
-  onLoad (data) {
-    if (data && data.id) {
-      this.id = data.id
-    }
-    const token = uni.getStorageSync('token')
-    if (token) {
-      uni.switchTab({
-        url: '/pages/index/index'
-      })
-    }
-  },
   onUnload () {
     // 清除定时器
     if (this.timer) {
@@ -129,8 +118,10 @@ export default {
     }
   },
   methods: {
+    hide () {
+      this.$emit('hide')
+    },
     decryptPhoneNumber (e) {
-
       if (!e.detail.code) return
       request({
         url: '/api/v1/wx-auth-tokens?code=' + e.detail.code,
@@ -138,9 +129,7 @@ export default {
       }).then(e => {
         if (e.data) {
           uni.setStorageSync('token', e.data.token)
-          uni.switchTab({
-            url: '/pages/index/index'
-          })
+          this.$emit('ok')
         }
       })
     },
@@ -236,9 +225,7 @@ export default {
 
           // 跳转到首页
           setTimeout(() => {
-            uni.switchTab({
-              url: '/pages/index/index'
-            })
+            this.$emit('ok')
           }, 1500)
         } else {
           uni.showToast({
@@ -271,28 +258,31 @@ export default {
   }
 }
 </script>
-
-<style scoped>
+<style lang="scss" scoped>
+.login-bg {
+  width: 100%;
+  background-color: rgba($color: #000, $alpha: 0.6);
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  top: 0;
+  z-index: 999999;
+}
 .content {
   display: flex;
   flex-direction: column;
   padding: 40rpx 40rpx 60rpx;
-  min-height: 100vh;
+  height: 600rpx;
   box-sizing: border-box;
-  background-color: #f7f8fa;
+  background-color: #f0f0f0;
+  border-top-right-radius: 30rpx;
+  border-top-left-radius: 30rpx;
   color: #222222;
-}
-
-.logo {
-  height: 160rpx;
-  width: 160rpx;
-  margin: 60rpx auto 100rpx;
-  display: block;
-}
-
-.head {
-  text-align: center;
-  margin-bottom: 120rpx;
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  left: 0;
 }
 
 .input-group {
@@ -388,7 +378,6 @@ export default {
   display: flex;
   align-items: center;
   padding: 0 8rpx;
-  margin-top: 20rpx;
 }
 
 .check {
@@ -426,7 +415,7 @@ export default {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 50rpx;
+  margin-bottom: 30rpx;
 }
 
 .login-btn:not(.disabled) {

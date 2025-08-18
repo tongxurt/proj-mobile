@@ -1,13 +1,21 @@
 <template>
   <view class="container">
-    <view class="header">
+    <Login
+      v-if="isLogin"
+      @hide="isLogin = false"
+      @ok="isLogin = false; init()"
+    />
+    <view
+      class="header"
+      v-if="freeInfo.planId === 'free'"
+    >
       <view class="header-left">
         <image
           class="vip-icon"
           src="/static/vip.svg"
           mode="aspectFit"
         />
-        <view>免费版 (剩余 2 次生成)</view>
+        <view>免费版 (剩余 {{ freeInfo.remaining || 0 }} 次生成)</view>
       </view>
       <view
         class="header-right"
@@ -164,8 +172,12 @@
 <script>
 import request from "../../request";
 import share from "../mixins/share";
+import Login from "@/components/login/index.vue";
 export default {
   mixins: [share],
+  components: {
+    Login
+  },
   data () {
     return {
       productLink: '',
@@ -190,67 +202,67 @@ export default {
         {
           mainText: '都说老婆美丽才是老公最大的面子',
           subText: '窝瓶子里捞丝展示/美颜脸部展示',
-          thumbnail: '/static/avatar.jpg'
+          thumbnail: 'https://yoozy.oss-cn-hangzhou.aliyuncs.com/demo/19e92c126f3cc0fc0527e36209b58fab.png'
         },
         {
           mainText: '我老公现在真就每天雷打不动让我喝一瓶燕窝',
           subText: '喝燕窝 (这部分不用口播,直接配音就行）',
-          thumbnail: '/static/avatar.jpg',
+          thumbnail: 'https://yoozy.oss-cn-hangzhou.aliyuncs.com/demo/5d2f4be6e8ef4dcad2eb19d278b364a8.png',
         },
         {
           mainText: '小仙炖的鲜炖燕窝我是自己吃了两个月才给你们分享的',
           subText: '拿着一瓶燕窝口播',
-          thumbnail: '/static/avatar.jpg'
+          thumbnail: 'https://yoozy.oss-cn-hangzhou.aliyuncs.com/demo/a58dfdb84a55f698d784d33289edceb8.png'
         },
         {
           mainText: '对比两个月前的变化真的是肉眼可见',
           subText: '展示平时打扮的美美的和出去旅游美美的照片或视频',
-          thumbnail: '/static/avatar.jpg'
+          thumbnail: 'https://yoozy.oss-cn-hangzhou.aliyuncs.com/demo/7d645f6f2989d41a673c99ed1eb24709.png'
         },
         {
           mainText: '它这每一瓶都是独立小罐装',
           subText: '真人出镜-打开盖子展示',
-          thumbnail: '/static/avatar.jpg'
+          thumbnail: 'https://yoozy.oss-cn-hangzhou.aliyuncs.com/demo/721993afc3987bdff2b646d2e0466772.png'
         },
         {
           mainText: '掀开盖子燕窝丝根根分明的',
           subText: '真人出镜-燕窝捞丝展示',
-          thumbnail: '/static/avatar.jpg'
+          thumbnail: 'https://yoozy.oss-cn-hangzhou.aliyuncs.com/demo/3bd13d46feaf5800391f6c9bb1ec33da.png'
         },
         {
           mainText: '用的全是马来和印尼那边可溯源的燕窝',
           subText: '扫描溯源码，展示产地',
-          thumbnail: '/static/avatar.jpg'
+          thumbnail: 'https://yoozy.oss-cn-hangzhou.aliyuncs.com/demo/a1a6151d3b9bc14bb574927d24f99d54.png'
         },
         {
           mainText: '而且配料很干净啊只有燕窝、冰糖和水',
           subText: '展示配料表',
-          thumbnail: '/static/avatar.jpg'
+          thumbnail: 'https://yoozy.oss-cn-hangzhou.aliyuncs.com/demo/7f22b93b09b5adf86664cc083291716c.png'
         },
         {
           mainText: '而且特有的鲜炖工艺直接把三倍活性蛋白都锁在瓶里',
           subText: '倒出燕窝展示',
-          thumbnail: '/static/avatar.jpg'
+          thumbnail: 'https://yoozy.oss-cn-hangzhou.aliyuncs.com/demo/3bd13d46feaf5800391f6c9bb1ec33da.png'
         },
         {
           mainText: '这可比你说一百遍"多喝热水"实在多了',
           subText: '再次捞丝展示，注意画面要展示出燕丝粗长',
-          thumbnail: '/static/avatar.jpg'
+          thumbnail: 'https://yoozy.oss-cn-hangzhou.aliyuncs.com/demo/f4032a44b3489b14d1e5765fed263aa2.png'
         },
         {
           mainText: '关键现在买两箱还能送你这个同款面膜',
           subText: '真人出镜-拿着面膜口播',
-          thumbnail: '/static/avatar.jpg'
+          thumbnail: 'https://yoozy.oss-cn-hangzhou.aliyuncs.com/demo/c6b5c9ecd74a86d00bb9d5df583d1fea.png'
         },
         {
           mainText: '所以说有些钱不能省,但也不用多花',
           subText: '箱子里拿出一瓶口播',
-          thumbnail: '/static/avatar.jpg'
+          thumbnail: 'https://yoozy.oss-cn-hangzhou.aliyuncs.com/demo/d385297222746724e7bf729892777492.png'
         },
         {
           mainText: '以后每天她掀开瓶盖的那瞬间',
           subText: '边开盖子边口播，最后一句表情可以丰富一点',
-          thumbnail: '/static/avatar.jpg'
+          thumbnail: 'https://yoozy.oss-cn-hangzhou.aliyuncs.com/demo/721993afc3987bdff2b646d2e0466772.png'
         }
       ],
       // 第二个文案集合 - 礼盒方向
@@ -258,61 +270,62 @@ export default {
         {
           mainText: '妈妈无论多少岁也都是女孩子',
           subText: '拿着一瓶燕窝边打开边口播',
-          thumbnail: '/static/avatar.jpg'
+          thumbnail: 'https://yoozy.oss-cn-hangzhou.aliyuncs.com/demo/721993afc3987bdff2b646d2e0466772.png'
         },
         {
           mainText: '操劳半生的她比谁都值得被宠成公主',
           subText: '妈妈出镜吃燕窝',
-          thumbnail: '/static/avatar.jpg'
+          thumbnail: 'https://yoozy.oss-cn-hangzhou.aliyuncs.com/demo/5d2f4be6e8ef4dcad2eb19d278b364a8.png'
         },
         {
           mainText: '女神节快到了可别忘记给妈妈也准备一份礼物',
           subText: '一边说话一边拿出礼盒',
-          thumbnail: '/static/avatar.jpg'
+          thumbnail: 'https://yoozy.oss-cn-hangzhou.aliyuncs.com/demo/7d645f6f2989d41a673c99ed1eb24709.png'
         },
         {
           mainText: '小仙炖新出的精炖燕窝限定礼盒',
           subText: '礼盒展示特写',
-          thumbnail: '/static/avatar.jpg'
+          thumbnail: 'https://yoozy.oss-cn-hangzhou.aliyuncs.com/demo/d385297222746724e7bf729892777492.png'
         },
         {
           mainText: '红色的硬箱打开瞬间贵气拉满',
           subText: '打开礼盒展示',
-          action: '查看拍摄手法',
-          thumbnail: '/static/avatar.jpg'
+          thumbnail: 'https://yoozy.oss-cn-hangzhou.aliyuncs.com/demo/d385297222746724e7bf729892777492.png'
         },
         {
           mainText: '里面5瓶精炖燕窝和5瓶爆珠的cp组合',
           subText: '开盖把燕窝倒出来+贴图展示',
-          thumbnail: '/static/avatar.jpg'
+          thumbnail: 'https://yoozy.oss-cn-hangzhou.aliyuncs.com/demo/7f22b93b09b5adf86664cc083291716c.png'
         },
         {
           mainText: '每瓶都是用马来和印尼的金丝燕窝现炖',
           subText: '捞丝展示',
-          thumbnail: '/static/avatar.jpg'
+          thumbnail: 'https://yoozy.oss-cn-hangzhou.aliyuncs.com/demo/f4032a44b3489b14d1e5765fed263aa2.png'
         },
         {
           mainText: '你看这燕丝都稠到能挂勺',
           subText: '燕窝瓶子里捞丝展示',
-          thumbnail: '/static/avatar.jpg'
+          thumbnail: 'https://yoozy.oss-cn-hangzhou.aliyuncs.com/demo/3bd13d46feaf5800391f6c9bb1ec33da.png'
         },
         {
           mainText: '配料表还特别的干净,给妈妈吃就很放心',
           subText: '礼盒背面配料表特写',
-          thumbnail: '/static/avatar.jpg'
+          thumbnail: 'https://yoozy.oss-cn-hangzhou.aliyuncs.com/demo/7f22b93b09b5adf86664cc083291716c.png'
         },
         {
           mainText: '而且燕窝对女人来说是特别好的',
           subText: '以妈妈为背景,拿一瓶燕窝打开盖子把燕窝递给妈妈',
-          thumbnail: '/static/avatar.jpg'
+          thumbnail: 'https://yoozy.oss-cn-hangzhou.aliyuncs.com/demo/a58dfdb84a55f698d784d33289edceb8.png'
         },
         {
           mainText: '趁着女神节赶紧给妈妈把这个章子怡同款的燕窝礼盒给安排上',
           subText: '一边说话一边盖上礼盒,后拿着礼盒口播推荐',
-          thumbnail: '/static/avatar.jpg'
+          thumbnail: 'https://yoozy.oss-cn-hangzhou.aliyuncs.com/demo/7d645f6f2989d41a673c99ed1eb24709.png'
         }
       ],
-      currentScriptIndex: 0 // 当前显示的文案索引
+      currentScriptIndex: 0, // 当前显示的文案索引
+      freeInfo: {},
+      isLogin: false
     }
   },
   computed: {
@@ -322,6 +335,21 @@ export default {
     }
   },
   methods: {
+    init () {
+      this.getDyInfo()
+      this.getFree()
+    },
+    async getFree () {
+      const data = await request({
+        url: '/api/v1/users/me/credit-state',
+        method: 'GET',
+      })
+      if (data.code === "UNAUTHORIZED") {
+        this.isLogin = true
+        return
+      }
+      this.freeInfo = data.data || {}
+    },
     goToMember () {
       uni.navigateTo({
         url: '/package/pages/memberCenter/index'
@@ -342,6 +370,10 @@ export default {
           url: '/api/pro/v1/accounts',
           method: 'GET',
         })
+        if (data.code === "UNAUTHORIZED") {
+          this.isLogin = true
+          return
+        }
         this.dyUser = data.data || {}
       } catch (error) {
         console.error('获取用户信息失败:', error)
@@ -370,6 +402,10 @@ export default {
         }
       })
       uni.hideLoading();
+      if (data.code === "UNAUTHORIZED") {
+        this.isLogin = true
+        return
+      }
       if (!data || !data.data) {
         uni.showToast({ title: '失败', icon: 'none' });
         return
@@ -400,6 +436,15 @@ export default {
       }
     },
     regenerateScript () {
+      // this.$toast.show('请先绑定抖音账号')
+      uni.$drawer.show({
+        itemList: ['选项1', '选项2', '选项3'],
+        height: '40%',
+        success: function (res) {
+          console.log('选中了第' + res.tapIndex + '个选项')
+        }
+      })
+
       // 在两个文案集合之间轮播
       this.currentScriptIndex = (this.currentScriptIndex + 1) % 2;
     }
@@ -411,14 +456,14 @@ export default {
         selected: 0
       });
     }
-    const token = uni.getStorageSync('token')
-    if (!token) {
-      uni.redirectTo({
-        url: '/pages/login/index'
-      })
-      return
-    }
-    this.getDyInfo()
+    // const token = uni.getStorageSync('token')
+    // if (!token) {
+    //   uni.redirectTo({
+    //     url: '/pages/login/index'
+    //   })
+    //   return
+    // }
+    this.init()
   },
   beforeDestroy () {
     if (this.stepTimer) clearTimeout(this.stepTimer);
