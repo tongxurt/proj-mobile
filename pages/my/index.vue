@@ -32,11 +32,11 @@
       <!-- 统计卡 -->
       <view class="card stat-card">
         <view class="stat-item">
-          <text class="stat-num">127</text>
+          <text class="stat-num">{{freeInfo.cost || 0}}</text>
           <text class="stat-label">本月生成次数</text>
         </view>
         <view class="stat-item">
-          <text class="stat-num">396</text>
+          <text class="stat-num">{{freeInfo.remaining || 0}}</text>
           <text class="stat-label">剩余生成次数</text>
         </view>
       </view>
@@ -435,13 +435,26 @@ export default {
       showVip: false,
       showPlanPopup: false,
       dyUser: {},
-      userInfo: {}
+      userInfo: {},
+      freeInfo: {}
     }
   },
   methods: {
     init () {
       this.getDyInfo()
       this.getUserInfo()
+      this.getFree()
+    },
+    async getFree () {
+      const data = await request({
+        url: '/api/v1/users/me/credit-state',
+        method: 'GET',
+      })
+      if (data.code === "UNAUTHORIZED") {
+        this.isLogin = true
+        return
+      }
+      this.freeInfo = data.data || {}
     },
     upgradeNow () {
       uni.showToast({ title: '升级成功', icon: 'success' })
