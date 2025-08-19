@@ -294,7 +294,7 @@
               </button>
               <button
                 class="shot-btn"
-                @click="upload"
+                @click="upload(item, key)"
               >
                 <image src="/static/upload.svg" />
                 上传素材
@@ -302,7 +302,20 @@
             </view>
             <view class="shot-record">
               <view class="record-label">成片记录：</view>
-              <view class="record-empty">暂无上传素材</view>
+              <view
+                class="record-empty"
+                v-if="!item.uploadUrl"
+              >暂无上传素材</view>
+              <view
+                class="record-empty1"
+                v-else
+              >
+                <image
+                  src="/static/video_1.svg"
+                  mode="aspectFill"
+                />
+                {{ item.uploadUrl }}
+              </view>
             </view>
           </view>
         </view>
@@ -310,8 +323,11 @@
 
       <!-- 底部操作栏 -->
       <view class="footer-bar">
-        <button class="footer-btn outline">导出脚本</button>
-        <button class="footer-btn">一键成片</button>
+        <view class="footer-bar-text">已上传素材({{ uploadUrlLength }}/{{ data.script.segments.length }})</view>
+        <view class="footer-btn-box">
+          <button class="footer-btn outline">导出脚本</button>
+          <button class="footer-btn">一键成片</button>
+        </view>
       </view>
     </view>
 
@@ -392,7 +408,6 @@ import request from "../../../request";
 import config from "../../../config";
 import share from "../../../pages/mixins/share";
 import Login from "../../../components/login/index.vue";
-
 export default {
   mixins: [share],
   components: {
@@ -433,9 +448,25 @@ export default {
   onUnload () {
     this.unloaded = true
   },
+  computed: {
+    uploadUrlLength () {
+      return this.data.script.segments.filter(e => e.uploadUrl).length
+    }
+  },
   methods: {
     init () {
       this.getDetail(this.id)
+    },
+    async uploadImg (url, index) {
+      const data = await request({
+        url: `/api/pro/v1/tasks/${this.id}`,
+        method: 'PATCH',
+        data: { "action": "updateProduction", params: { production: url, index: index.toString() } }
+      })
+      if (data.code === "UNAUTHORIZED") {
+        this.isLogin = true
+        return
+      }
     },
     async regen () {
       const data = await request({
@@ -565,11 +596,47 @@ export default {
       this.showPhotograph = true
     },
 
-    upload () {
-      uni.chooseVideo({
+    getFileName (name) {
+      const n = name.split('/')
+      return n[n.length - 1]
+    },
+
+    async upload (item, index) {
+      const that = this
+      uni.chooseMedia({
+        mediaType: ["video"],
+        count: 1,
         sourceType: ['album'],
-        success: (chooseImageRes) => {
-          console.log(chooseImageRes);
+        success: (chooseMediaRes) => {
+          const { tempFilePath, fileType } = chooseMediaRes.tempFiles[0]
+          const name = that.getFileName(tempFilePath)
+
+          uni.request({
+            url: `${config.qiniuHost}?bucket=${config.qiniuBucket}`,
+            method: 'GET',
+            success: async (res) => {
+              uni.uploadFile({
+                url: 'https://upload.qiniup.com', //仅为示例，非真实的接口地址
+                filePath: tempFilePath,
+                name: 'file',
+                formData: {
+                  uri: tempFilePath,
+                  type: fileType,
+                  name,
+                  key: name,
+                  token: res.data.data.token
+                },
+                success: () => {
+                  const url = `${config.qiniuDownload}/${name}`
+                  item.uploadUrl = url
+                  that.uploadImg(url, index)
+                }
+              });
+            },
+            fail: res => {
+              console.log(res);
+            }
+          })
         }
       });
     },
@@ -1216,6 +1283,19 @@ export default {
           color: #bbb;
           margin-top: 4rpx;
         }
+        .record-empty1 {
+          font-size: 24rpx;
+          color: #333;
+          margin-top: 4rpx;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          image {
+            width: 30rpx;
+            height: 30rpx;
+            vertical-align: middle;
+          }
+        }
 
         .record-file {
           display: flex;
@@ -1255,11 +1335,22 @@ export default {
     bottom: 0;
     background: #fff;
     display: flex;
+    flex-direction: column;
     justify-content: space-between;
     padding: 24rpx 36rpx 32rpx 36rpx;
     box-shadow: 0 -2rpx 8rpx rgba(0, 0, 0, 0.03);
     z-index: 10;
-
+    .footer-bar-text {
+      font-size: 28rpx;
+      color: #999;
+      font-weight: bold;
+      margin-bottom: 20rpx;
+    }
+    .footer-btn-box {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
     .footer-btn {
       flex: 1;
       height: 80rpx;

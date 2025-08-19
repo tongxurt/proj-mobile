@@ -1,5 +1,8 @@
 const host = "https://y.veogo.cn" 
 const name = '予之文化'
+const qiniuHost = 'https://i.veogo.cn/api/ag/qiniu/upload-token'
+const qiniuBucket = 'veogo'
+const qiniuDownload = 'https://res.veogo.cn'
 
 /**
  * 时间戳转换为可读时间格式
@@ -28,4 +31,7 @@ export default {
   host,
   name,
   formatTimestamp,
+  qiniuHost,
+  qiniuBucket,
+  qiniuDownload
 }

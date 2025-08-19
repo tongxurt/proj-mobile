@@ -436,14 +436,6 @@ export default {
       }
     },
     regenerateScript () {
-      // this.$toast.show('请先绑定抖音账号')
-      uni.$drawer.show({
-        itemList: ['选项1', '选项2', '选项3'],
-        height: '40%',
-        success: function (res) {
-          console.log('选中了第' + res.tapIndex + '个选项')
-        }
-      })
 
       // 在两个文案集合之间轮播
       this.currentScriptIndex = (this.currentScriptIndex + 1) % 2;
