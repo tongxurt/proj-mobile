@@ -482,11 +482,14 @@ export default {
     justify-content: space-between;
     align-items: center;
     background: linear-gradient(90deg, #ff6700, #ff2d38);
-    position: fixed;
-    z-index: 9999;
-    left: 0;
-    right: 0;
-    top: 0;
+    margin-top: -32rpx;
+    margin-left: -32rpx;
+    margin-right: -32rpx;
+    // position: fixed;
+    // z-index: 9999;
+    // left: 0;
+    // right: 0;
+    // top: 0;
     padding: 20rpx 40rpx;
     .header-left {
       display: flex;
