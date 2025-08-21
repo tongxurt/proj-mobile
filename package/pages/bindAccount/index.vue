@@ -6,7 +6,15 @@
       @ok="isLogin = false; init()"
     />
     <!-- 扫码绑定内容 -->
-    <view class="scan-content">
+    <web-view
+      v-if="url"
+      :src="url"
+      @load="handleLoad"
+    ></web-view>
+    <view
+      class="scan-content"
+      v-if="false"
+    >
       <view class="title">扫码授权绑定</view>
       <view class="desc">使用抖音 APP 扫描下方二维码完成授权</view>
       <view class="qrcode-box">
@@ -78,13 +86,33 @@ export default {
   data () {
     return {
       isLogin: false,
-      qrcodeUrl: '' // 可替换为后端生成的二维码
+      qrcodeUrl: '', // 可替换为后端生成的二维码
+      url: '',
+      isload: false
     }
   },
   onLoad () {
-    this.refreshQrcode()
+    // this.refreshQrcode()
+    this.getUserInfo()
   },
   methods: {
+    handleLoad (e) {
+      if (this.isload) {
+        uni.navigateBack()
+      }
+      this.isload = true
+    },
+    async getUserInfo () {
+      const data = await request({
+        url: '/api/v1/users/me',
+        method: 'GET',
+      })
+      if (data.code === "UNAUTHORIZED") {
+        this.isLogin = true
+        return
+      }
+      this.url = `https://open.douyin.com/platform/oauth/pc/auth?client_key=awdihb5n6xqjs2lm&response_type=code&scope=user_info&redirect_uri=https%3A%2F%2Fy.yoozyai.com%2Fapi%2Fpro%2Fdouyin%2Fcallback&state=${data.data._id}`
+    },
     async refreshQrcode () {
       uni.showLoading({
         title: '加载中...',
