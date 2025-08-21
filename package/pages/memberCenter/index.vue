@@ -18,7 +18,10 @@
         <view class="plan-feature">优先体验新功能</view>
         <view class="plan-feature">专家1对1账号诊断(1次/月)</view>
       </view>
-      <button class="plan-card-btn plan-card-btn-vip">立即开通</button>
+      <button
+        @click="handleBuy('vip')"
+        class="plan-card-btn plan-card-btn-vip"
+      >立即开通</button>
     </view>
     <!-- 高级版卡片 -->
     <view class="plan-card plan-card-pro">
@@ -37,7 +40,10 @@
         <view class="plan-feature">生成视频无水印</view>
         <view class="plan-feature">优先体验新功能</view>
       </view>
-      <button class="plan-card-btn plan-card-btn-pro">立即开通</button>
+      <button
+        @click="handleBuy('pro')"
+        class="plan-card-btn plan-card-btn-pro"
+      >立即开通</button>
     </view>
     <!-- 专业版卡片 -->
     <view class="plan-card plan-card-basic">
@@ -55,7 +61,10 @@
         <view class="plan-feature">基础账号分析功能</view>
         <view class="plan-feature">生成视频无水印</view>
       </view>
-      <button class="plan-card-btn plan-card-btn-basic">选择套餐</button>
+      <button
+        @click="handleBuy('basic')"
+        class="plan-card-btn plan-card-btn-basic"
+      >选择套餐</button>
     </view>
     <!-- 免费版卡片 -->
     <view class="plan-card plan-card-free">
@@ -74,6 +83,7 @@
 
 <script>
 import share from "../../../pages/mixins/share";
+import request from "../../../request";
 export default {
   mixins: [share],
   data () {
@@ -81,6 +91,51 @@ export default {
     };
   },
   methods: {
+    handleBuy () {
+      console.log(1)
+      uni.login({
+        success: async (res) => {
+          try {
+            const data = await request({
+              url: `/api/v1/wx-open-id?code=${res.code}`,
+              method: 'GET',
+            })
+            this.pay(data.data.openId)
+
+          } catch (error) {
+            console.log(error);
+          }
+        },
+        fail: (err) => {
+          console.log(err)
+        }
+      })
+    },
+    async pay (openId) {
+      console.log(2)
+      const data = await request({
+        url: `/api/v1/wx-orders`,
+        method: 'POST',
+        data: {
+          openId: openId,
+          planId: 'l1-month'
+        }
+      })
+      wx.requestPayment({
+        timeStamp: data.data.timeStamp,
+        nonceStr: data.data.nonceStr,
+        package: data.data.package,
+        signType: data.data.signType,
+        paySign: data.data.paySign,
+        success: (res) => {
+          console.log(res)
+        },
+        fail: (err) => {
+          console.log(err)
+        }
+      })
+      console.log(data)
+    }
   }
 };
 </script>
