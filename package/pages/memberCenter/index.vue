@@ -69,7 +69,7 @@
     <!-- 免费版卡片 -->
     <view class="plan-card plan-card-free">
       <view class="plan-card-header">
-        <text class="plan-card-title">免费版（当前）</text>
+        <text class="plan-card-title">免费版</text>
       </view>
       <view class="plan-card-desc">体验基础功能</view>
       <view class="plan-card-features">
