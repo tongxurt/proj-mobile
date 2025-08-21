@@ -117,11 +117,11 @@ export default {
       uni.saveImageToPhotosAlbum({
         filePath: this.qrcodeUrl,
         success: (res) => {
-          console.log("saveImageToPhotosAlbum success", JSON.stringify(res));
           uni.showToast({
             icon: "none",
             title: "图片保存成功，请到手机相册查看"
           });
+          uni.navigateBack()
         },
         fail: (err) => {
           uni.showToast({

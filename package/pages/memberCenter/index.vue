@@ -19,7 +19,7 @@
         <view class="plan-feature">专家1对1账号诊断(1次/月)</view>
       </view>
       <button
-        @click="handleBuy('vip')"
+        @click="handleBuy('l3-month')"
         class="plan-card-btn plan-card-btn-vip"
       >立即开通</button>
     </view>
@@ -41,7 +41,7 @@
         <view class="plan-feature">优先体验新功能</view>
       </view>
       <button
-        @click="handleBuy('pro')"
+        @click="handleBuy('l2-month')"
         class="plan-card-btn plan-card-btn-pro"
       >立即开通</button>
     </view>
@@ -62,7 +62,7 @@
         <view class="plan-feature">生成视频无水印</view>
       </view>
       <button
-        @click="handleBuy('basic')"
+        @click="handleBuy('l1-month')"
         class="plan-card-btn plan-card-btn-basic"
       >选择套餐</button>
     </view>
@@ -91,8 +91,7 @@ export default {
     };
   },
   methods: {
-    handleBuy () {
-      console.log(1)
+    handleBuy (planId) {
       uni.login({
         success: async (res) => {
           try {
@@ -100,7 +99,7 @@ export default {
               url: `/api/v1/wx-open-id?code=${res.code}`,
               method: 'GET',
             })
-            this.pay(data.data.openId)
+            this.pay(data.data.openId, planId)
 
           } catch (error) {
             console.log(error);
@@ -111,14 +110,13 @@ export default {
         }
       })
     },
-    async pay (openId) {
-      console.log(2)
+    async pay (openId, planId) {
       const data = await request({
         url: `/api/v1/wx-orders`,
         method: 'POST',
         data: {
           openId: openId,
-          planId: 'l1-month'
+          planId: planId
         }
       })
       wx.requestPayment({

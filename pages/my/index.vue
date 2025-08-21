@@ -56,7 +56,7 @@
           </view>
           <button
             class="upgrade-btn"
-            @click="showUpgrade = true"
+            @click="goToMemberCenter"
           >立即升级</button>
         </view>
       </view>
