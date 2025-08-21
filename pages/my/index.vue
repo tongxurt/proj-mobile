@@ -19,7 +19,7 @@
             <text
               class="user-tag"
               @click="showPlanPopup = true"
-            >免费版</text>
+            >{{ isVip }}</text>
           </view>
           <!-- <view class="user-expire">会员到期时间：2025-08-10</view> -->
         </view>
@@ -42,7 +42,10 @@
       </view>
 
       <!-- 升级卡 -->
-      <view class="card upgrade-card">
+      <view
+        class="card upgrade-card"
+        v-if="isVip !== '尊享版'"
+      >
         <view class="upgrade-row">
           <view class="upgrade-title">升级至尊享版</view>
           <text class="upgrade-tag">限时优惠</text>
@@ -437,6 +440,21 @@ export default {
       dyUser: {},
       userInfo: {},
       freeInfo: {}
+    }
+  },
+  computed: {
+    isVip () {
+      switch (this.freeInfo.planId) {
+        case 'l1-month':
+          return "专业版"
+        case 'l2-month':
+          return "高级版"
+        case 'l3-month':
+          return "尊享版"
+
+        default:
+          return "免费版"
+      }
     }
   },
   methods: {
