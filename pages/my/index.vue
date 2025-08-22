@@ -5,7 +5,80 @@
       @hide="isLogin = false"
       @ok="isLogin = false; init()"
     />
-    <view class="main-content">
+
+    <!-- 骨架屏 -->
+    <view
+      v-if="loading"
+      class="skeleton-container"
+    >
+      <view class="main-content">
+        <!-- 用户信息卡骨架屏 -->
+        <view class="card user-card">
+          <view class="skeleton-avatar"></view>
+          <view class="user-info">
+            <view class="user-row">
+              <view class="skeleton-username"></view>
+              <view class="skeleton-user-tag"></view>
+            </view>
+          </view>
+          <view class="skeleton-user-btn"></view>
+        </view>
+
+        <!-- 统计卡骨架屏 -->
+        <view class="card stat-card">
+          <view class="stat-item">
+            <view class="skeleton-stat-num"></view>
+            <view class="skeleton-stat-label"></view>
+          </view>
+          <view class="stat-item">
+            <view class="skeleton-stat-num"></view>
+            <view class="skeleton-stat-label"></view>
+          </view>
+        </view>
+
+        <!-- 升级卡骨架屏 -->
+        <view class="card upgrade-card">
+          <view class="upgrade-row">
+            <view class="skeleton-upgrade-title"></view>
+            <view class="skeleton-upgrade-tag"></view>
+          </view>
+          <view class="skeleton-upgrade-desc"></view>
+          <view class="upgrade-bottom">
+            <view class="upgrade-price">
+              <view class="skeleton-price"></view>
+              <view class="skeleton-origin"></view>
+              <view class="skeleton-discount"></view>
+            </view>
+            <view class="skeleton-upgrade-btn"></view>
+          </view>
+        </view>
+
+        <!-- 功能列表骨架屏 -->
+        <view class="card list-card">
+          <view
+            class="list-item"
+            v-for="i in 3"
+            :key="i"
+          >
+            <view class="skeleton-list-icon-box">
+              <view class="skeleton-list-icon"></view>
+            </view>
+            <view class="list-info">
+              <view class="skeleton-list-title"></view>
+              <view class="skeleton-list-desc"></view>
+            </view>
+            <view class="skeleton-bind-tag"></view>
+            <view class="skeleton-list-arrow"></view>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 实际内容 -->
+    <view
+      class="main-content"
+      v-else
+    >
       <!-- 会员信息卡 -->
       <view class="card user-card">
         <image
@@ -439,7 +512,8 @@ export default {
       showPlanPopup: false,
       dyUser: {},
       userInfo: {},
-      freeInfo: {}
+      freeInfo: {},
+      loading: true // 新增加载状态
     }
   },
   computed: {
@@ -458,21 +532,37 @@ export default {
     }
   },
   methods: {
-    init () {
-      this.getDyInfo()
-      this.getUserInfo()
-      this.getFree()
+    async init () {
+      this.loading = true
+      try {
+        await Promise.all([
+          this.getDyInfo(),
+          this.getUserInfo(),
+          this.getFree()
+        ])
+      } catch (error) {
+        console.error('加载数据失败:', error)
+      } finally {
+        // 延迟一点时间让骨架屏显示效果更明显
+        setTimeout(() => {
+          this.loading = false
+        }, 500)
+      }
     },
     async getFree () {
-      const data = await request({
-        url: '/api/v1/users/me/credit-state',
-        method: 'GET',
-      })
-      if (data.code === "UNAUTHORIZED") {
-        this.isLogin = true
-        return
+      try {
+        const data = await request({
+          url: '/api/v1/users/me/credit-state',
+          method: 'GET',
+        })
+        if (data.code === "UNAUTHORIZED") {
+          this.isLogin = true
+          return
+        }
+        this.freeInfo = data.data || {}
+      } catch (error) {
+        console.error('获取免费信息失败:', error)
       }
-      this.freeInfo = data.data || {}
     },
     upgradeNow () {
       uni.showToast({ title: '升级成功', icon: 'success' })
@@ -496,26 +586,34 @@ export default {
       })
     },
     async getDyInfo () {
-      const data = await request({
-        url: '/api/pro/v1/accounts',
-        method: 'GET',
-      })
-      if (data.code === "UNAUTHORIZED") {
-        this.isLogin = true
-        return
+      try {
+        const data = await request({
+          url: '/api/pro/v1/accounts',
+          method: 'GET',
+        })
+        if (data.code === "UNAUTHORIZED") {
+          this.isLogin = true
+          return
+        }
+        this.dyUser = data.data || {}
+      } catch (error) {
+        console.error('获取抖音信息失败:', error)
       }
-      this.dyUser = data.data || {}
     },
     async getUserInfo () {
-      const data = await request({
-        url: '/api/v1/users/me',
-        method: 'GET',
-      })
-      if (data.code === "UNAUTHORIZED") {
-        this.isLogin = true
-        return
+      try {
+        const data = await request({
+          url: '/api/v1/users/me',
+          method: 'GET',
+        })
+        if (data.code === "UNAUTHORIZED") {
+          this.isLogin = true
+          return
+        }
+        this.userInfo = data.data
+      } catch (error) {
+        console.error('获取用户信息失败:', error)
       }
-      this.userInfo = data.data
     }
   },
   onShow () {
@@ -757,6 +855,383 @@ export default {
         border-bottom: none;
       }
     }
+  }
+}
+// 骨架屏容器
+.skeleton-container {
+  background: #f7f8fa;
+  min-height: 100vh;
+
+  .main-content {
+    width: 92vw;
+    max-width: 700rpx;
+    margin: 0 auto;
+    padding-top: 24rpx;
+
+    .card {
+      background: #fff;
+      border-radius: 24rpx;
+      box-shadow: 0 8rpx 32rpx 0 rgba(0, 0, 0, 0.06);
+      margin-bottom: 28rpx;
+      padding: 0;
+    }
+
+    .user-card {
+      display: flex;
+      align-items: center;
+      padding: 32rpx 32rpx 32rpx 32rpx;
+
+      .skeleton-avatar {
+        width: 88rpx;
+        height: 88rpx;
+        border-radius: 50%;
+        background: linear-gradient(
+          90deg,
+          #f0f0f0 25%,
+          #e0e0e0 50%,
+          #f0f0f0 75%
+        );
+        background-size: 200% 100%;
+        animation: shimmer 1.5s infinite;
+        margin-right: 24rpx;
+      }
+
+      .user-info {
+        flex: 1;
+        .user-row {
+          display: flex;
+          align-items: center;
+          margin-bottom: 8rpx;
+
+          .skeleton-username {
+            width: 150rpx;
+            height: 32rpx;
+            background: linear-gradient(
+              90deg,
+              #f0f0f0 25%,
+              #e0e0e0 50%,
+              #f0f0f0 75%
+            );
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 8rpx;
+            margin-right: 16rpx;
+          }
+
+          .skeleton-user-tag {
+            width: 80rpx;
+            height: 30rpx;
+            background: linear-gradient(
+              90deg,
+              #f0f0f0 25%,
+              #e0e0e0 50%,
+              #f0f0f0 75%
+            );
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 40rpx;
+          }
+        }
+      }
+
+      .skeleton-user-btn {
+        width: 120rpx;
+        height: 56rpx;
+        background: linear-gradient(
+          90deg,
+          #f0f0f0 25%,
+          #e0e0e0 50%,
+          #f0f0f0 75%
+        );
+        background-size: 200% 100%;
+        animation: shimmer 1.5s infinite;
+        border-radius: 12rpx;
+        margin-left: 24rpx;
+      }
+    }
+
+    .stat-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 32rpx 32rpx;
+
+      .stat-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        flex: 1;
+
+        .skeleton-stat-num {
+          width: 80rpx;
+          height: 40rpx;
+          background: linear-gradient(
+            90deg,
+            #f0f0f0 25%,
+            #e0e0e0 50%,
+            #f0f0f0 75%
+          );
+          background-size: 200% 100%;
+          animation: shimmer 1.5s infinite;
+          border-radius: 8rpx;
+          margin-bottom: 8rpx;
+        }
+
+        .skeleton-stat-label {
+          width: 120rpx;
+          height: 24rpx;
+          background: linear-gradient(
+            90deg,
+            #f0f0f0 25%,
+            #e0e0e0 50%,
+            #f0f0f0 75%
+          );
+          background-size: 200% 100%;
+          animation: shimmer 1.5s infinite;
+          border-radius: 8rpx;
+        }
+      }
+
+      .stat-item + .stat-item {
+        border-left: 2rpx solid #f2f3f5;
+      }
+    }
+
+    .upgrade-card {
+      padding: 32rpx 32rpx 24rpx 32rpx;
+      background: linear-gradient(90deg, #f7f8fa 0%, #fff6fa 100%);
+
+      .upgrade-row {
+        display: flex;
+        align-items: center;
+        margin-bottom: 8rpx;
+
+        .skeleton-upgrade-title {
+          width: 180rpx;
+          height: 28rpx;
+          background: linear-gradient(
+            90deg,
+            #f0f0f0 25%,
+            #e0e0e0 50%,
+            #f0f0f0 75%
+          );
+          background-size: 200% 100%;
+          animation: shimmer 1.5s infinite;
+          border-radius: 8rpx;
+          flex: 1;
+        }
+
+        .skeleton-upgrade-tag {
+          width: 80rpx;
+          height: 20rpx;
+          background: linear-gradient(
+            90deg,
+            #f0f0f0 25%,
+            #e0e0e0 50%,
+            #f0f0f0 75%
+          );
+          background-size: 200% 100%;
+          animation: shimmer 1.5s infinite;
+          border-radius: 18rpx;
+        }
+      }
+
+      .skeleton-upgrade-desc {
+        width: 100%;
+        height: 24rpx;
+        background: linear-gradient(
+          90deg,
+          #f0f0f0 25%,
+          #e0e0e0 50%,
+          #f0f0f0 75%
+        );
+        background-size: 200% 100%;
+        animation: shimmer 1.5s infinite;
+        border-radius: 8rpx;
+        margin-bottom: 18rpx;
+      }
+
+      .upgrade-bottom {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        .upgrade-price {
+          display: flex;
+          align-items: baseline;
+          flex: 1;
+
+          .skeleton-price {
+            width: 80rpx;
+            height: 32rpx;
+            background: linear-gradient(
+              90deg,
+              #f0f0f0 25%,
+              #e0e0e0 50%,
+              #f0f0f0 75%
+            );
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 8rpx;
+            margin-right: 12rpx;
+          }
+
+          .skeleton-origin {
+            width: 60rpx;
+            height: 24rpx;
+            background: linear-gradient(
+              90deg,
+              #f0f0f0 25%,
+              #e0e0e0 50%,
+              #f0f0f0 75%
+            );
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 8rpx;
+            margin-right: 12rpx;
+          }
+
+          .skeleton-discount {
+            width: 100rpx;
+            height: 22rpx;
+            background: linear-gradient(
+              90deg,
+              #f0f0f0 25%,
+              #e0e0e0 50%,
+              #f0f0f0 75%
+            );
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 8rpx;
+          }
+        }
+
+        .skeleton-upgrade-btn {
+          width: 120rpx;
+          height: 56rpx;
+          background: linear-gradient(
+            90deg,
+            #f0f0f0 25%,
+            #e0e0e0 50%,
+            #f0f0f0 75%
+          );
+          background-size: 200% 100%;
+          animation: shimmer 1.5s infinite;
+          border-radius: 12rpx;
+        }
+      }
+    }
+
+    .list-card {
+      padding: 0;
+
+      .list-item {
+        display: flex;
+        align-items: center;
+        padding: 28rpx 32rpx;
+        border-bottom: 2rpx solid #eee;
+
+        .skeleton-list-icon-box {
+          padding: 20rpx;
+          background: #e9f8f3;
+          border-radius: 50%;
+          display: flex;
+          justify-content: center;
+          align-content: center;
+          margin-right: 20rpx;
+
+          .skeleton-list-icon {
+            width: 44rpx;
+            height: 44rpx;
+            background: linear-gradient(
+              90deg,
+              #f0f0f0 25%,
+              #e0e0e0 50%,
+              #f0f0f0 75%
+            );
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 4rpx;
+          }
+        }
+
+        .list-info {
+          flex: 1;
+
+          .skeleton-list-title {
+            width: 120rpx;
+            height: 28rpx;
+            background: linear-gradient(
+              90deg,
+              #f0f0f0 25%,
+              #e0e0e0 50%,
+              #f0f0f0 75%
+            );
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 8rpx;
+            margin-bottom: 4rpx;
+          }
+
+          .skeleton-list-desc {
+            width: 200rpx;
+            height: 22rpx;
+            background: linear-gradient(
+              90deg,
+              #f0f0f0 25%,
+              #e0e0e0 50%,
+              #f0f0f0 75%
+            );
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 8rpx;
+          }
+        }
+
+        .skeleton-bind-tag {
+          width: 80rpx;
+          height: 20rpx;
+          background: linear-gradient(
+            90deg,
+            #f0f0f0 25%,
+            #e0e0e0 50%,
+            #f0f0f0 75%
+          );
+          background-size: 200% 100%;
+          animation: shimmer 1.5s infinite;
+          border-radius: 8rpx;
+          margin-right: 16rpx;
+        }
+
+        .skeleton-list-arrow {
+          width: 28rpx;
+          height: 28rpx;
+          background: linear-gradient(
+            90deg,
+            #f0f0f0 25%,
+            #e0e0e0 50%,
+            #f0f0f0 75%
+          );
+          background-size: 200% 100%;
+          animation: shimmer 1.5s infinite;
+          border-radius: 4rpx;
+        }
+      }
+
+      .list-item:last-child {
+        border-bottom: none;
+      }
+    }
+  }
+}
+
+// 骨架屏闪烁动画
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
   }
 }
 .popup-mask {

@@ -103,15 +103,19 @@ export default {
       this.isload = true
     },
     async getUserInfo () {
-      const data = await request({
-        url: '/api/v1/users/me',
-        method: 'GET',
-      })
-      if (data.code === "UNAUTHORIZED") {
-        this.isLogin = true
-        return
+      try {
+        const data = await request({
+          url: '/api/v1/users/me',
+          method: 'GET',
+        })
+        if (data.code === "UNAUTHORIZED") {
+          this.isLogin = true
+          return
+        }
+        this.url = `https://open.douyin.com/platform/oauth/pc/auth?client_key=awdihb5n6xqjs2lm&response_type=code&scope=user_info&redirect_uri=https%3A%2F%2Fy.yoozyai.com%2Fapi%2Fpro%2Fdouyin%2Fcallback&state=${data.data._id}`
+      } catch (error) {
+        console.log(error);
       }
-      this.url = `https://open.douyin.com/platform/oauth/pc/auth?client_key=awdihb5n6xqjs2lm&response_type=code&scope=user_info&redirect_uri=https%3A%2F%2Fy.yoozyai.com%2Fapi%2Fpro%2Fdouyin%2Fcallback&state=${data.data._id}`
     },
     async refreshQrcode () {
       uni.showLoading({

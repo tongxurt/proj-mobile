@@ -93,26 +93,85 @@
         <view
           v-for="(step, index) in getSetps()"
           :key="index"
-          class="step-item"
-          :class="{ 'completed': step.status === 'done', 'current': step.status !== 'done' }"
         >
-          <view class="step-icon">
-            <image
-              v-if="step.status === 'done'"
-              class="check-icon"
-              src="/static/check-white.svg"
-              mode="aspectFit"
-            ></image>
-            <view
-              v-else
-              class="loading-dots"
-            >
-              <view class="dot dot1"></view>
-              <view class="dot dot2"></view>
-              <view class="dot dot3"></view>
+          <view
+            class="step-item"
+            :class="{ 'completed': step.status === 'done', 'current': step.status !== 'done' }"
+          >
+            <view class="step-icon">
+              <image
+                v-if="step.status === 'done'"
+                class="check-icon"
+                src="/static/check-white.svg"
+                mode="aspectFit"
+              ></image>
+              <view
+                v-else
+                class="loading-dots"
+              >
+                <view class="dot dot1"></view>
+                <view class="dot dot2"></view>
+                <view class="dot dot3"></view>
+              </view>
             </view>
+            <text class="step-text">{{ step.title }}</text>
           </view>
-          <text class="step-text">{{ step.step }}</text>
+          <!-- 进度详情展示 -->
+          <view
+            v-if="step.sub && step.sub.length > 0"
+            class="step-sub-content"
+          >
+            <!-- 文本类型展示 -->
+            <template v-if="step.type === 'text'">
+              <view class="text-list">
+                <view
+                  v-for="(item, subIndex) in step.sub.slice(0, 6)"
+                  :key="subIndex"
+                  class="text-item"
+                >
+                  <view class="text-item-index">{{ subIndex + 1 }}</view>
+                  <view class="text-item-content">{{ item }}</view>
+                </view>
+                <!-- 显示更多提示 -->
+                <view
+                  v-if="step.sub.length > 6"
+                  class="more-indicator"
+                >
+                  还有 {{ step.sub.length - 6 }} 项未显示...
+                </view>
+              </view>
+            </template>
+
+            <!-- 图片类型展示 -->
+            <template v-if="step.type === 'image'">
+              <view class="image-grid">
+                <view
+                  v-for="(imageUrl, imgIndex) in step.sub.slice(0, 6)"
+                  :key="imgIndex"
+                  class="image-item"
+                  @click="previewImage(imageUrl, step.sub)"
+                >
+                  <image
+                    :src="imageUrl"
+                    mode="aspectFill"
+                    class="step-image"
+                    :lazy-load="true"
+                  />
+                  <view class="image-overlay">
+                    <view class="image-index">{{ imgIndex + 1 }}</view>
+                  </view>
+                </view>
+                <!-- 显示更多提示 -->
+                <!-- <view
+                  v-if="step.sub.length > 6"
+                  class="more-images-indicator"
+                >
+                  <view class="more-count">+{{ step.sub.length - 6 }}</view>
+                  <view class="more-text">点击查看更多</view>
+                </view> -->
+              </view>
+            </template>
+          </view>
         </view>
       </view>
     </view>
@@ -325,8 +384,14 @@
       <view class="footer-bar">
         <view class="footer-bar-text">已上传素材({{ uploadUrlLength }}/{{ data.script.segments.length }})</view>
         <view class="footer-btn-box">
-          <button class="footer-btn outline">导出脚本</button>
-          <button class="footer-btn">一键成片</button>
+          <button
+            class="footer-btn outline"
+            @click="exportScript"
+          >导出脚本</button>
+          <button
+            class="footer-btn"
+            @click="oneClickSlicing"
+          >一键成片</button>
         </view>
       </view>
     </view>
@@ -456,6 +521,36 @@ export default {
   methods: {
     init () {
       this.getDetail(this.id)
+    },
+    async exportScript () {
+      uni.showLoading({
+        title: '加载中...',
+      })
+      uni.downloadFile({
+        url: `${config.host}/api/pro/v1/tasks/${this.id}/script-files`,
+        success: (res) => {
+          uni.openDocument({
+            filePath: res.tempFilePath,
+            fileType: 'docx',
+            showMenu: true,
+            success: (res) => {
+              console.log(res, 111);
+            },
+            fail: (res) => {
+              console.log(res, 222);
+            },
+            complete: () => {
+              uni.hideLoading()
+            }
+          })
+        },
+        fail: (res) => {
+          console.log(res, 333);
+          uni.hideLoading()
+        },
+      })
+    },
+    async oneClickSlicing () {
     },
     async uploadImg (url, index) {
       const data = await request({
@@ -642,11 +737,24 @@ export default {
     },
     getSetps () {
       return Object.entries(this.data.steps).map(([key, value]) => {
+        const data = value.data || {}
         return {
-          step: value.title,
-          status: value.status
+          title: value.title,
+          status: value.status,
+          sub: data.images || data.sellingPoints || data.targetAudience || data.usageScenarios || [],
+          type: data.images ? "image" : "text"
         }
       }).filter(item => item.status !== 'waiting')
+    },
+
+    // 图片预览方法
+    previewImage (currentUrl, imageList) {
+      uni.previewImage({
+        current: currentUrl,
+        urls: imageList,
+        indicator: 'number',
+        loop: true
+      })
     },
   }
 }
@@ -1726,10 +1834,7 @@ export default {
       margin-bottom: 16rpx;
       opacity: 0;
       animation: stepFadeIn 0.5s ease-out forwards;
-
-      &:last-child {
-        margin-bottom: 0;
-      }
+      margin-top: 20rpx;
 
       .step-icon {
         width: 32rpx;
@@ -1795,6 +1900,163 @@ export default {
         .step-text {
           color: #222;
           font-weight: 500;
+        }
+      }
+    }
+  }
+
+  // 进度详情内容样式
+  .step-sub-content {
+    margin-top: 20rpx;
+    margin-left: 48rpx; // 对齐步骤文本
+    padding: 20rpx;
+    background: #ffffff;
+    border-radius: 16rpx;
+    box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.08);
+
+    // 文本列表样式
+    .text-list {
+      .text-item {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 12rpx;
+        padding: 12rpx 0;
+        border-bottom: 1rpx solid #f5f5f5;
+
+        &:last-child {
+          margin-bottom: 0;
+          border-bottom: none;
+        }
+
+        .text-item-index {
+          margin-top: 10rpx;
+          width: 40rpx;
+          height: 40rpx;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          color: #fff;
+          font-size: 22rpx;
+          font-weight: bold;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin-right: 16rpx;
+          flex-shrink: 0;
+        }
+
+        .text-item-content {
+          flex: 1;
+          font-size: 26rpx;
+          line-height: 1.6;
+          color: #333;
+          padding-top: 8rpx;
+        }
+      }
+
+      // 更多文本提示样式
+      .more-indicator {
+        margin-top: 16rpx;
+        padding: 12rpx 16rpx;
+        background: #f8f9fa;
+        border-radius: 8rpx;
+        text-align: center;
+        font-size: 24rpx;
+        color: #666;
+        border: 1rpx dashed #ddd;
+      }
+    }
+
+    // 图片网格样式
+    .image-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16rpx;
+
+      .image-item {
+        position: relative;
+        width: calc((100% - 32rpx) / 3); // 3列布局
+        aspect-ratio: 1; // 正方形
+        border-radius: 12rpx;
+        overflow: hidden;
+        box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+
+        &:active {
+          transform: scale(0.95);
+        }
+
+        .step-image {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+        }
+
+        .image-overlay {
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: linear-gradient(
+            135deg,
+            rgba(0, 0, 0, 0.3) 0%,
+            rgba(0, 0, 0, 0.1) 100%
+          );
+          display: flex;
+          align-items: flex-start;
+          justify-content: flex-end;
+          padding: 8rpx;
+
+          .image-index {
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+            font-size: 20rpx;
+            font-weight: bold;
+            padding: 4rpx 8rpx;
+            border-radius: 12rpx;
+            min-width: 24rpx;
+            text-align: center;
+            backdrop-filter: blur(4rpx);
+          }
+        }
+      }
+
+      // 响应式布局
+      &:deep(.image-item) {
+        @media (max-width: 480rpx) {
+          width: calc((100% - 16rpx) / 2); // 小屏幕2列
+        }
+      }
+
+      // 更多图片提示样式
+      .more-images-indicator {
+        width: calc((100% - 32rpx) / 3);
+        aspect-ratio: 1;
+        border-radius: 12rpx;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border: 2rpx dashed #adb5bd;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        font-size: 24rpx;
+        color: #6c757d;
+
+        .more-count {
+          font-size: 32rpx;
+          font-weight: bold;
+          color: #495057;
+          margin-bottom: 4rpx;
+        }
+
+        .more-text {
+          font-size: 20rpx;
+          color: #868e96;
+        }
+
+        // 小屏幕适配
+        @media (max-width: 480rpx) {
+          width: calc((100% - 16rpx) / 2);
         }
       }
     }

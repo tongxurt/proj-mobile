@@ -386,6 +386,11 @@ export default {
         url: '/package/pages/bindAccount/index'
       })
     },
+    getLink (text) {
+      const urlPattern = /https?:\/\/[^\s]+/g;
+      const urls = text.match(urlPattern);
+      return urls[0]
+    },
     async generateScript () {
       if (!this.productLink) {
         uni.showToast({ title: '请粘贴商品链接', icon: 'none' });
@@ -398,12 +403,18 @@ export default {
         url: '/api/pro/v1/tasks',
         method: 'POST',
         data: {
-          commodityUrl: this.productLink
+          commodityUrl: this.getLink(this.productLink)
         }
       })
       uni.hideLoading();
       if (data.code === "UNAUTHORIZED") {
         this.isLogin = true
+        return
+      }
+      if (data.code === 'exceeded') {
+        uni.navigateTo({
+          url: '/package/pages/memberCenter/index'
+        })
         return
       }
       if (!data || !data.data) {
@@ -436,7 +447,6 @@ export default {
       }
     },
     regenerateScript () {
-
       // 在两个文案集合之间轮播
       this.currentScriptIndex = (this.currentScriptIndex + 1) % 2;
     }

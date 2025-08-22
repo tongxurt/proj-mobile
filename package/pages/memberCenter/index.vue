@@ -64,7 +64,7 @@
       <button
         @click="handleBuy('l1-month')"
         class="plan-card-btn plan-card-btn-basic"
-      >选择套餐</button>
+      >立即开通</button>
     </view>
     <!-- 免费版卡片 -->
     <view class="plan-card plan-card-free">
@@ -92,6 +92,9 @@ export default {
   },
   methods: {
     handleBuy (planId) {
+      uni.showLoading({
+        title: '加载中...',
+      })
       uni.login({
         success: async (res) => {
           try {
@@ -103,36 +106,44 @@ export default {
 
           } catch (error) {
             console.log(error);
+            uni.hideLoading()
           }
         },
         fail: (err) => {
           console.log(err)
+          uni.hideLoading()
         }
       })
     },
     async pay (openId, planId) {
-      const data = await request({
-        url: `/api/v1/wx-orders`,
-        method: 'POST',
-        data: {
-          openId: openId,
-          planId: planId
-        }
-      })
-      wx.requestPayment({
-        timeStamp: data.data.timeStamp,
-        nonceStr: data.data.nonceStr,
-        package: data.data.package,
-        signType: data.data.signType,
-        paySign: data.data.paySign,
-        success: (res) => {
-          console.log(res)
-        },
-        fail: (err) => {
-          console.log(err)
-        }
-      })
-      console.log(data)
+      try {
+        const data = await request({
+          url: `/api/v1/wx-orders`,
+          method: 'POST',
+          data: {
+            openId: openId,
+            planId: planId
+          }
+        })
+        wx.requestPayment({
+          timeStamp: data.data.timeStamp,
+          nonceStr: data.data.nonceStr,
+          package: data.data.package,
+          signType: data.data.signType,
+          paySign: data.data.paySign,
+          success: (res) => {
+            console.log(res)
+          },
+          fail: (err) => {
+            console.log(err)
+          },
+          complete: () => {
+            uni.hideLoading()
+          }
+        })
+      } catch (error) {
+        uni.hideLoading()
+      }
     }
   }
 };
